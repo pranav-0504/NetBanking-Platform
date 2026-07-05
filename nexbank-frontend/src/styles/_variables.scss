@@ -1,0 +1,49 @@
+// NexBank Design Tokens — Dark Navy + Electric Teal
+
+// Brand colors
+$nb-navy-900: #050d18;
+$nb-navy-800: #0a1628;
+$nb-navy-700: #111f35;
+$nb-navy-600: #1a2d4a;
+$nb-navy-500: #243b5c;
+
+$nb-teal-500: #00e5c4;
+$nb-teal-400: #33ebd0;
+$nb-teal-300: #66f0dc;
+$nb-teal-600: #00b89d;
+$nb-teal-700: #008a76;
+
+// Semantic colors
+$nb-success: #22c55e;
+$nb-warning: #f59e0b;
+$nb-error: #ef4444;
+$nb-info: #3b82f6;
+
+// Surface & text
+$nb-surface: $nb-navy-800;
+$nb-surface-elevated: $nb-navy-700;
+$nb-surface-card: $nb-navy-600;
+$nb-border: rgba(255, 255, 255, 0.08);
+$nb-text-primary: #f1f5f9;
+$nb-text-secondary: #94a3b8;
+$nb-text-muted: #64748b;
+
+// Typography
+$nb-font-heading: 'Inter', sans-serif;
+$nb-font-body: 'DM Sans', sans-serif;
+
+// Spacing
+$nb-radius-sm: 8px;
+$nb-radius-md: 12px;
+$nb-radius-lg: 16px;
+
+// Shadows
+$nb-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+$nb-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+$nb-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+$nb-shadow-glow: 0 0 20px rgba(0, 229, 196, 0.15);
+
+// Layout
+$nb-sidebar-width: 260px;
+$nb-header-height: 64px;
+$nb-max-content-width: 1280px;

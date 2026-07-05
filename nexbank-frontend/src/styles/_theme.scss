@@ -1,0 +1,110 @@
+@use '@angular/material' as mat;
+@use 'variables' as *;
+
+// Custom teal palette for NexBank primary
+$nb-teal-palette: (
+  50: #e0fbf6,
+  100: #b3f5ea,
+  200: #80eedd,
+  300: #4de7d0,
+  400: #26e2c7,
+  500: $nb-teal-500,
+  600: $nb-teal-600,
+  700: $nb-teal-700,
+  800: #006b5a,
+  900: #004d41,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: rgba(black, 0.87),
+    500: rgba(black, 0.87),
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  ),
+);
+
+// Custom navy palette for accent/surface tones
+$nb-navy-palette: (
+  50: #e8edf3,
+  100: #c5d1e0,
+  200: #9fb3cb,
+  300: #7895b6,
+  400: #5b7ea6,
+  500: #3e6797,
+  600: #385f8f,
+  700: #305484,
+  800: #284a7a,
+  900: $nb-navy-800,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+  ),
+);
+
+$nb-primary: mat.m2-define-palette($nb-teal-palette, 500, 300, 700);
+$nb-accent: mat.m2-define-palette($nb-navy-palette, 900, 700, 500);
+$nb-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+$nb-theme: mat.m2-define-dark-theme(
+  (
+    color: (
+      primary: $nb-primary,
+      accent: $nb-accent,
+      warn: $nb-warn,
+    ),
+    typography: mat.m2-define-typography-config(
+      $font-family: $nb-font-body,
+      $headline-1: mat.m2-define-typography-level(2rem, 1.2, 600, $nb-font-heading),
+      $headline-2: mat.m2-define-typography-level(1.5rem, 1.3, 600, $nb-font-heading),
+      $headline-3: mat.m2-define-typography-level(1.25rem, 1.4, 600, $nb-font-heading),
+      $body-1: mat.m2-define-typography-level(1rem, 1.6, 400, $nb-font-body),
+      $body-2: mat.m2-define-typography-level(0.875rem, 1.5, 400, $nb-font-body),
+      $button: mat.m2-define-typography-level(0.875rem, 1, 600, $nb-font-heading),
+    ),
+    density: 0,
+  )
+);
+
+@include mat.all-component-themes($nb-theme);
+
+// Component overrides for banking aesthetic
+.mat-mdc-card {
+  background-color: $nb-surface-elevated !important;
+  border: 1px solid $nb-border;
+  border-radius: $nb-radius-md !important;
+  box-shadow: $nb-shadow-md !important;
+}
+
+.mat-mdc-raised-button.mat-primary,
+.mat-mdc-unelevated-button.mat-primary {
+  background: linear-gradient(135deg, $nb-teal-500, $nb-teal-600) !important;
+  color: $nb-navy-900 !important;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+.mat-mdc-snack-bar-container {
+  &.success-snackbar {
+    --mdc-snackbar-container-color: #{$nb-success};
+  }
+
+  &.error-snackbar {
+    --mdc-snackbar-container-color: #{$nb-error};
+  }
+}
