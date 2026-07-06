@@ -93,6 +93,14 @@ input:focus {
 
 }
 
+input.ng-invalid.ng-touched {
+  border: 1px solid #ef4444;
+}
+
+input.ng-valid.ng-touched {
+  border: 1px solid #22c55e;
+}
+
 .password-box {
 
   display: flex;
@@ -149,9 +157,12 @@ input:focus {
 }
 
 .login-btn:hover {
-
   background: #1d4ed8;
+}
 
+.login-btn:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
 }
 
 .register {
@@ -221,4 +232,17 @@ small {
     flex-direction: column;
     gap: 0;
   }
+}
+
+.success-snackbar {
+
+  --mdc-snackbar-container-color: #16a34a;
+  --mdc-snackbar-supporting-text-color: white;
+}
+
+.error-snackbar {
+
+  --mdc-snackbar-container-color: #dc2626;
+  --mdc-snackbar-supporting-text-color: white;
+
 }

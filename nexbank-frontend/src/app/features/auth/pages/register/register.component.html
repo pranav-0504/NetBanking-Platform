@@ -31,7 +31,14 @@
           <input
             type="text"
             formControlName="firstName"
-            placeholder="First Name">
+            placeholder="First Name"
+          >
+
+          <!--! Validation message bro: -->
+          @if(firstName.touched && firstName.hasError('required')) {
+            <small>First Name is required.</small>
+          }
+
         </div>
 
         <div class="form-group">
@@ -39,7 +46,13 @@
           <input
             type="text"
             formControlName="lastName"
-            placeholder="Last Name">
+            placeholder="Last Name"
+          >
+          
+          @if(lastName.touched && lastName.hasError('required')) {
+            <small>Last Name is required.</small>
+          }
+
         </div>
 
       </div>
@@ -49,7 +62,19 @@
         <input
           type="email"
           formControlName="email"
-          placeholder="Enter Email">
+          placeholder="Enter Email"
+        >
+
+        @if(email.touched){
+          @if(email.hasError('required')) {
+            <small>Email is required.</small>
+          } 
+          @if(email.hasError('email')) {
+            <small>Invalid email format, Please Enter a valid Email.</small>
+          } 
+        }
+
+
       </div>
 
       <div class="form-group">
@@ -57,16 +82,41 @@
         <input
           type="text"
           formControlName="mobile"
-          placeholder="9876543210">
+          placeholder="Enter your mobile number"
+        >
+
+        <!--! Validation Message: -->
+        @if(mobile.touched){
+
+          @if(mobile.hasError('required')){
+            <small>Mobile number is required.</small>
+          }
+
+          @if(mobile.hasError('pattern')){
+            <small>Enter a valid 10-digit mobile number.</small>
+          }
+        }
+
       </div>
 
       <div class="form-group">
         <label>Password</label>
 
         <div class="password-box">
+          
           <input
             [type]="hidePassword() ? 'password' : 'text'"
-            formControlName="password">
+            formControlName="password"
+          >
+
+          @if(password.touched){
+            @if(password.hasError('required')){
+              <small>Password is required.</small>
+            }
+            @if(password.hasError('minlength')){
+              <small>Password must be at least 5 characters.</small>
+            }
+          }
 
           <button
             type="button"
@@ -87,7 +137,18 @@
 
           <input
             [type]="hideConfirmPassword() ? 'password' : 'text'"
-            formControlName="confirmPassword">
+            formControlName="confirmPassword"
+          >
+          
+          @if(registerForm.hasError('passwordMismatch') && confirmPassword.touched){
+            <small>
+                ❌ Passwords do not match ❌.
+            </small>
+          }
+
+          @if(confirmPassword.touched && confirmPassword.hasError('required')){
+            <small>Confirm Password is required.</small>
+          }
 
           <button
             type="button"
@@ -105,17 +166,28 @@
 
         <input
           type="checkbox"
-          formControlName="acceptTerms">
+          formControlName="acceptTerms"
+        >
+
+        @if(acceptTerms.touched && acceptTerms.hasError('required')){
+          <small>Please accept Terms & Conditions & then proceed.</small>
+        }
+        @if(acceptTerms.touched && acceptTerms.hasError('requiredTrue')){
+          <small>Please accept Terms & Conditions & then proceed.</small>
+        }
 
         <span>I accept Terms & Conditions</span>
 
       </div>
 
       <button
+        
         class="login-btn"
-        type="submit">
+        type="submit"
+        [disabled]="registerForm.invalid || loading()">
 
-        Register
+        {{loading() ? 'Registering...' : 'Register'}}
+        <!-- Register -->
 
       </button>
 

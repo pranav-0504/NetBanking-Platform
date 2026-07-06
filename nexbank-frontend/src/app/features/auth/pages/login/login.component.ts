@@ -7,6 +7,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,10 @@ export class LoginComponent {
 
   loginForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService
+  ) {
 
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -36,6 +40,7 @@ export class LoginComponent {
   }
 
   onSubmit() {
+    
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
       return;
@@ -43,11 +48,30 @@ export class LoginComponent {
 
     this.loading.set(true);
 
-    console.log(this.loginForm.value);
+    const payload = {
+      email: this.loginForm.value.email,
+      password: this.loginForm.value.password,
+    };
 
-    setTimeout(() => {
-      this.loading.set(false);
-    }, 1000);
+    this.authService.login(payload).subscribe({
+      
+      next: (response) => {
+        console.log('Login successful:', response);
+        
+        this.loading.set(false); 
+
+        // todo:
+        // Save JWT Token
+        // Navigate to Dashboard
+      },
+      error: (error) => {
+        console.error('Login Failed');
+        console.error(error);
+
+        this.loading.set(false);
+      }
+
+    });
   }
 
   get email() {

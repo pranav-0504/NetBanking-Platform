@@ -7,10 +7,13 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth.service';
+import { passwordMatchValidator } from '../../../../shared/password-match.validator';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-register',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink,  MatSnackBarModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -21,8 +24,13 @@ export class RegisterComponent {
 
   registerForm!: FormGroup;
 
-  constructor(private fb: FormBuilder) {
-    this.registerForm = this.fb.group({
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private snackBar: MatSnackBar
+  ) {
+    this.registerForm = this.fb.group(
+    {
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
@@ -30,10 +38,14 @@ export class RegisterComponent {
         '',
         [Validators.required, Validators.pattern(/^[6-9]\d{9}$/)],
       ],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.required, Validators.minLength(5)]],
       confirmPassword: ['', [Validators.required]],
       acceptTerms: [false, Validators.requiredTrue],
-    });
+    },
+    {
+      validators: passwordMatchValidator,         //! for password == confirm password match krne ke lie
+    }
+  );
   }
 
   togglePassword() {
@@ -45,12 +57,62 @@ export class RegisterComponent {
   }
 
   onSubmit() {
+    console.log('Register button clicked');
+    
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
     }
 
-    console.log(this.registerForm.value);
+    this.loading.set(true);
+    const payload = {
+      firstName: this.registerForm.value.firstName,
+      lastName: this.registerForm.value.lastName,
+      email: this.registerForm.value.email,
+      mobile: this.registerForm.value.mobile,
+      password: this.registerForm.value.password,
+    };
+
+    this.authService.register(payload).subscribe({
+
+      next: (response) => {
+        console.log('Registration successful:', response);
+        this.loading.set(false);
+
+        this.snackBar.open(
+          'Registration Successful 🎉',
+          'Close',
+          {
+            duration: 6000,
+            panelClass: ['success-snackbar'],
+            horizontalPosition: 'right',
+            verticalPosition: 'top',
+          }
+        );
+      },
+
+      error: (error) => {
+        // console.error('Registration failed:', error);
+        this.loading.set(false);
+        const message = error?.error?.message || 'Something went wrong';
+
+        // alert(message);
+        this.snackBar.open(
+          error.error.message,
+          'Close',
+          {
+            duration: 6000,
+            panelClass: ['success-snackbar'],
+            horizontalPosition: 'right',
+            verticalPosition: 'top',
+          }
+        );
+      } 
+
+    });
+
+
+    // console.log(this.registerForm.value);
   }
 
   get firstName() {

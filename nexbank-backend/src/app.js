@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import logger from './config/logger.js';
 import { getStoreType } from './config/redis.js';
+import authRoutes from './routes/auth.routes.js';
 
 const app = express();
 
@@ -26,9 +27,9 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-/**
- * Health check endpoint.
- */
+
+
+// Health check endpoint. for testing
 app.get('/health', (_req, res) => {
   res.status(200).json({
     success: true,
@@ -43,16 +44,18 @@ app.get('/health', (_req, res) => {
   });
 });
 
+app.use('/api/v1/auth', authRoutes);
+
 /**
  * API v1 base route — feature routes will be mounted here in subsequent steps.
  */
-app.use('/api/v1', (_req, res) => {
-  res.status(200).json({
-    success: true,
-    data: { version: '1.0.0' },
-    message: 'NexBank API v1',
-  });
-});
+// app.use('/api/v1', (_req, res) => {
+//   res.status(200).json({
+//     success: true,
+//     data: { version: '1.0.0' },
+//     message: 'NexBank API v1',
+//   });
+// });
 
 /**
  * 404 handler for unmatched routes.
