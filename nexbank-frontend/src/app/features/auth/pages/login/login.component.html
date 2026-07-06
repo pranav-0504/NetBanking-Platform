@@ -1,0 +1,117 @@
+<!-- <p>login works!</p> -->
+<div class="login-page">
+
+    <div class="left-panel">
+
+        <div class="content">
+            <h1>NexBank</h1>
+
+            <h2>Smart Banking for Everyone</h2>
+
+            <p>
+                Secure, Fast and Modern Digital Banking Platform.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="right-panel">
+
+        <form
+            [formGroup]="loginForm"
+            (ngSubmit)="onSubmit()"
+            class="login-card">
+
+            <h2>Welcome Back 👋</h2>
+
+            <p class="subtitle">
+                Login to continue
+            </p>
+
+            <div class="form-group">
+
+                <label>Email</label>
+
+                <input
+                    type="email"
+                    formControlName="email"
+                    placeholder="Enter your email">
+
+                @if(email.touched && email.invalid){
+
+                <small>Email is required.</small>
+
+                }
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Password</label>
+
+                <div class="password-box">
+
+                    <input
+                        [type]="hidePassword() ? 'password' : 'text'"
+                        formControlName="password"
+                        placeholder="Enter password">
+
+                    <button
+                        type="button"
+                        (click)="togglePassword()">
+
+                        {{ hidePassword() ? 'Show' : 'Hide' }}
+
+                    </button>
+
+                </div>
+
+                @if(password.touched && password.invalid){
+
+                <small>Password is required.</small>
+
+                }
+
+            </div>
+
+            <div class="options">
+
+                <label>
+
+                    <input
+                        type="checkbox"
+                        formControlName="rememberMe">
+
+                    Remember Me
+
+                </label>
+
+                <a routerLink="/auth/forgot-password">
+                    Forgot Password?
+                </a>
+
+            </div>
+
+            <button
+                class="login-btn"
+                type="submit">
+
+                {{ loading() ? 'Logging In...' : 'Login' }}
+
+            </button>
+
+            <div class="register" >
+
+                Don't have an account?
+
+                <a routerLink="/auth/register" style="cursor: pointer;">
+                  Register
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
