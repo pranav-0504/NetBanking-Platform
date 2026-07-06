@@ -37,10 +37,8 @@
                     formControlName="email"
                     placeholder="Enter your email">
 
-                @if(email.touched && email.invalid){
-
-                <small>Email is required.</small>
-
+                @if(email.touched && email.invalid) {
+                    <small>Email is required.</small>
                 }
 
             </div>
@@ -67,10 +65,9 @@
                 </div>
 
                 @if(password.touched && password.invalid){
-
-                <small>Password is required.</small>
-
+                    <small>Password is required.</small>
                 }
+                
 
             </div>
 

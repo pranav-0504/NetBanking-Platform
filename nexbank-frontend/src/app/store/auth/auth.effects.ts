@@ -15,47 +15,47 @@ const USER_KEY = 'nexbank_user';
 export class AuthEffects {
   private readonly actions$ = inject(Actions);
 
-  /** Persist auth data to localStorage on successful login/OTP verify. */
+  /** Persist auth data to sessionStorage on successful login/OTP verify. */
   persistAuth$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(AuthActions.loginSuccess, AuthActions.verifyOtpSuccess),
         tap(({ accessToken, user }) => {
-          localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
-          localStorage.setItem(USER_KEY, JSON.stringify(user));
+          sessionStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+          sessionStorage.setItem(USER_KEY, JSON.stringify(user));
         }),
       ),
     { dispatch: false },
   );
 
-  /** Clear localStorage on logout success. */
+  /** Clear sessionStorage on logout success. */
   clearStorage$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(AuthActions.logoutSuccess),
         tap(() => {
-          localStorage.removeItem(ACCESS_TOKEN_KEY);
-          localStorage.removeItem(USER_KEY);
+          sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+          sessionStorage.removeItem(USER_KEY);
         }),
       ),
     { dispatch: false },
   );
 
-  /** Hydrate auth state from localStorage on app init. */
+  /** Hydrate auth state from sessionStorage on app init. */
   hydrateAuth$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.loadUserFromStorage),
       map(() => {
-        const token = localStorage.getItem(ACCESS_TOKEN_KEY);
-        const userJson = localStorage.getItem(USER_KEY);
+        const token = sessionStorage.getItem(ACCESS_TOKEN_KEY);
+        const userJson = sessionStorage.getItem(USER_KEY);
 
         if (token && userJson) {
           try {
             const user = JSON.parse(userJson) as User;
             return AuthActions.loadUserFromStorageSuccess({ user, accessToken: token });
           } catch {
-            localStorage.removeItem(ACCESS_TOKEN_KEY);
-            localStorage.removeItem(USER_KEY);
+            sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+            sessionStorage.removeItem(USER_KEY);
           }
         }
 

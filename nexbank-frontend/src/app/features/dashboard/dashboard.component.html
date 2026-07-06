@@ -1,0 +1,86 @@
+<main class="dashboard">
+  <header class="dashboard__header">
+    <div class="dashboard__brand">
+      <div class="dashboard__logo">
+        <mat-icon>account_balance</mat-icon>
+      </div>
+      <div>
+        <p class="dashboard__eyebrow">NexBank</p>
+        <h1>Dashboard</h1>
+      </div>
+    </div>
+
+    <button mat-stroked-button type="button" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
+  </header>
+
+  <section class="dashboard__hero">
+    <div class="dashboard__avatar">{{ initials }}</div>
+
+    <div>
+      <p class="dashboard__eyebrow">Welcome back</p>
+      <h2>{{ fullName }}</h2>
+      <p>{{ user?.email || 'Your secure banking workspace is ready.' }}</p>
+    </div>
+  </section>
+
+  <section class="dashboard__grid">
+    <mat-card class="dashboard__panel">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>person</mat-icon>
+        <mat-card-title>Profile</mat-card-title>
+        <mat-card-subtitle>Customer details</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="dashboard__row">
+          <span>Email</span>
+          <strong>{{ user?.email || '-' }}</strong>
+        </div>
+        <div class="dashboard__row">
+          <span>Mobile</span>
+          <strong>{{ user?.mobile || '-' }}</strong>
+        </div>
+        <div class="dashboard__row">
+          <span>Role</span>
+          <strong>{{ user?.role || 'customer' }}</strong>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="dashboard__panel">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>verified_user</mat-icon>
+        <mat-card-title>Verification</mat-card-title>
+        <mat-card-subtitle>Account status</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="dashboard__row">
+          <span>Email verified</span>
+          <strong>{{ user?.isEmailVerified ? 'Yes' : 'No' }}</strong>
+        </div>
+        <div class="dashboard__row">
+          <span>Mobile verified</span>
+          <strong>{{ user?.isMobileVerified ? 'Yes' : 'No' }}</strong>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="dashboard__panel dashboard__panel--accent">
+      <mat-card-header>
+        <mat-icon mat-card-avatar>account_balance_wallet</mat-icon>
+        <mat-card-title>Banking</mat-card-title>
+        <mat-card-subtitle>Coming next</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p>
+          Accounts, transactions, beneficiaries and transfers can plug into this dashboard next.
+        </p>
+      </mat-card-content>
+    </mat-card>
+  </section>
+</main>

@@ -1,5 +1,13 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
+
+const toPublicUser = (user) => {
+  const response = user.toObject();
+  delete response.password;
+  delete response.refreshToken;
+  return response;
+};
 
 export const registerUser = async (userData) => {
   const { firstName, lastName, email, mobile, password } = userData;
@@ -35,9 +43,40 @@ export const registerUser = async (userData) => {
   });
 
   // Never return password
-  const response = user.toObject();
-  delete response.password;
-  delete response.refreshToken;
+  return toPublicUser(user);
+};
 
-  return response;
+export const loginUser = async ({ email, password }) => {
+  const user = await User.findOne({ email: email?.toLowerCase().trim() });
+
+  if (!user) {
+    const error = new Error('Invalid email or password.');
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    const error = new Error('Invalid email or password.');
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const accessToken = jwt.sign(
+    {
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+    },
+    process.env.JWT_ACCESS_SECRET,
+    {
+      expiresIn: process.env.JWT_ACCESS_EXPIRY || '15m',
+    },
+  );
+
+  return {
+    user: toPublicUser(user),
+    accessToken,
+  };
 };

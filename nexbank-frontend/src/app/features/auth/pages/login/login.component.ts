@@ -6,12 +6,16 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+const ACCESS_TOKEN_KEY = 'nexbank_access_token';
+const USER_KEY = 'nexbank_user';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatSnackBarModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -24,12 +28,14 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
 
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
+      password: ['', [Validators.required, Validators.minLength(2)]],
       rememberMe: [false],
     });
 
@@ -57,20 +63,51 @@ export class LoginComponent {
       
       next: (response) => {
         console.log('Login successful:', response);
+        const accessToken = this.getAccessToken(response);
         
-        this.loading.set(false); 
+        if (!accessToken) {
+          this.loading.set(false);
+          this.showMessage('Login successful, but token missing in response.');
+          return;
+        }
 
-        // todo:
-        // Save JWT Token
-        // Navigate to Dashboard
+        sessionStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+
+        if (response?.data?.user) {
+          sessionStorage.setItem(USER_KEY, JSON.stringify(response.data.user));
+        }
+
+        this.loading.set(false);
+        this.showMessage('Login Successful');
+        this.router.navigateByUrl('/dashboard');
       },
       error: (error) => {
         console.error('Login Failed');
         console.error(error);
 
         this.loading.set(false);
+        this.showMessage(error?.error?.message || 'Invalid email or password');
       }
 
+    });
+  }
+
+  private getAccessToken(response: any): string | null {
+    return (
+      response?.data?.accessToken ||
+      response?.data?.token ||
+      response?.accessToken ||
+      response?.token ||
+      null
+    );
+  }
+
+  private showMessage(message: string) {
+    this.snackBar.open(message, 'Close', {
+      duration: 6000,
+      panelClass: ['success-snackbar'],
+      horizontalPosition: 'right',
+      verticalPosition: 'top',
     });
   }
 
