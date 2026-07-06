@@ -77,7 +77,7 @@ export const registerUser = async (userData) => {
       accountNumber,
       ifscCode,
       type: 'savings',
-      balance: 0,
+      balance: 500000,
     });
 
     return {

@@ -10,19 +10,28 @@
       </div>
     </div>
 
-    <button mat-stroked-button type="button" (click)="logout()">
-      <mat-icon>logout</mat-icon>
-      Logout
-    </button>
+    <nav class="dashboard__nav">
+      <a mat-button routerLink="/transactions">
+        <mat-icon>receipt_long</mat-icon>
+        Transactions
+      </a>
+      <button mat-stroked-button type="button" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </nav>
   </header>
 
   <section class="dashboard__hero">
-    <div class="dashboard__avatar">{{ initials }}</div>
-
     <div>
-      <p class="dashboard__eyebrow">Welcome back</p>
-      <h2>{{ fullName }}</h2>
-      <p>{{ user?.email || 'Your secure banking workspace is ready.' }}</p>
+      <p class="dashboard__eyebrow">Available balance</p>
+      <h2>{{ formattedBalance }}</h2>
+      <p>Updated {{ lastUpdated | date:'shortTime' }}</p>
+    </div>
+
+    <div class="dashboard__account-chip">
+      <span>{{ account?.accountNumber || '--------' }}</span>
+      <small>{{ account?.ifscCode || 'NEX00----' }}</small>
     </div>
   </section>
 
@@ -30,11 +39,19 @@
     <mat-card class="dashboard__panel">
       <mat-card-header>
         <mat-icon mat-card-avatar>person</mat-icon>
-        <mat-card-title>Profile</mat-card-title>
-        <mat-card-subtitle>Customer details</mat-card-subtitle>
+        <mat-card-title>Profile Details</mat-card-title>
+        <mat-card-subtitle>{{ fullName }}</mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
+        <div class="dashboard__row">
+          <span>Name</span>
+          <strong>{{ fullName }}</strong>
+        </div>
+        <div class="dashboard__row">
+          <span>Account type</span>
+          <strong>{{ accountType }}</strong>
+        </div>
         <div class="dashboard__row">
           <span>Email</span>
           <strong>{{ user?.email || '-' }}</strong>
@@ -43,57 +60,59 @@
           <span>Mobile</span>
           <strong>{{ user?.mobile || '-' }}</strong>
         </div>
-        <div class="dashboard__row">
-          <span>Role</span>
-          <strong>{{ user?.role || 'customer' }}</strong>
-        </div>
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="dashboard__panel">
-      <mat-card-header>
-        <mat-icon mat-card-avatar>verified_user</mat-icon>
-        <mat-card-title>Verification</mat-card-title>
-        <mat-card-subtitle>Account status</mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content>
-        <div class="dashboard__row">
-          <span>Email verified</span>
-          <strong>{{ user?.isEmailVerified ? 'Yes' : 'No' }}</strong>
-        </div>
-        <div class="dashboard__row">
-          <span>Mobile verified</span>
-          <strong>{{ user?.isMobileVerified ? 'Yes' : 'No' }}</strong>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card class="dashboard__panel dashboard__panel--accent">
+    <mat-card class="dashboard__panel dashboard__panel--account">
       <mat-card-header>
         <mat-icon mat-card-avatar>account_balance_wallet</mat-icon>
-        <mat-card-title>Bank Account</mat-card-title>
-        <mat-card-subtitle>Savings details</mat-card-subtitle>
+        <mat-card-title>Banking Details</mat-card-title>
+        <mat-card-subtitle>Primary savings account</mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
         <div class="dashboard__account-number">
           {{ account?.accountNumber || '--------' }}
         </div>
-
         <div class="dashboard__row">
-          <span>IFSC</span>
+          <span>IFSC code</span>
           <strong>{{ account?.ifscCode || '-' }}</strong>
         </div>
         <div class="dashboard__row">
-          <span>Type</span>
-          <strong>{{ account?.type || 'savings' }}</strong>
+          <span>Account type</span>
+          <strong>{{ accountType }}</strong>
         </div>
         <div class="dashboard__row">
           <span>Balance</span>
-          <strong>{{ account?.currency || '₹' }} {{ account?.balance || 0 }}</strong>
+          <strong>{{ formattedBalance }}</strong>
         </div>
       </mat-card-content>
     </mat-card>
+  </section>
+
+  <section class="dashboard__actions">
+    <a class="dashboard__action" routerLink="/fund-transfer">
+      <mat-icon>send</mat-icon>
+      <div>
+        <strong>Funds Transfer</strong>
+        <span>IMPS instant, NEFT in 5 minutes</span>
+      </div>
+    </a>
+
+    <a class="dashboard__action" routerLink="/beneficiaries">
+      <mat-icon>group_add</mat-icon>
+      <div>
+        <strong>Beneficiaries</strong>
+        <span>Add and remove saved payees</span>
+      </div>
+    </a>
+
+    <a class="dashboard__action" routerLink="/transactions">
+      <mat-icon>sync_alt</mat-icon>
+      <div>
+        <strong>Transactions</strong>
+        <span>Credits, debits and transfer history</span>
+      </div>
+    </a>
   </section>
 </main>

@@ -1,0 +1,72 @@
+<main class="bank-page">
+  <header class="bank-page__header">
+    <div>
+      <p>Payees</p>
+      <h1>Beneficiaries</h1>
+    </div>
+    <a mat-stroked-button routerLink="/dashboard">
+      <mat-icon>arrow_back</mat-icon>
+      Dashboard
+    </a>
+  </header>
+
+  <section class="beneficiary-layout">
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>group_add</mat-icon>
+        <mat-card-title>Add Beneficiary</mat-card-title>
+        <mat-card-subtitle>Save trusted accounts for faster transfers</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="beneficiaryForm" class="beneficiary-form">
+          <label>
+            Nickname
+            <input type="text" formControlName="nickName" placeholder="Pranav Savings">
+          </label>
+
+          <label>
+            Account number
+            <input type="text" maxlength="8" formControlName="accountNumber" placeholder="12345678">
+          </label>
+
+          <label>
+            IFSC code
+            <input type="text" maxlength="9" formControlName="ifscCode" placeholder="NEX001234">
+          </label>
+
+          <button mat-flat-button color="primary" type="button" (click)="addPreviewBeneficiary()" [disabled]="loading">
+            <mat-icon>add</mat-icon>
+            {{ loading ? 'Adding...' : 'Add Beneficiary' }}
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-icon mat-card-avatar>contacts</mat-icon>
+        <mat-card-title>Saved Beneficiaries</mat-card-title>
+        <mat-card-subtitle>Add or remove transfer payees</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        @if (beneficiaries.length === 0) {
+          <p class="empty">No beneficiaries added yet.</p>
+        }
+
+        @for (beneficiary of beneficiaries; track beneficiary.accountNumber; let index = $index) {
+          <div class="beneficiary-item">
+            <div>
+              <strong>{{ beneficiary.nickName }}</strong>
+              <span>{{ beneficiary.accountHolderName || 'Verified payee' }} | {{ beneficiary.accountNumber }} | {{ beneficiary.ifscCode }}</span>
+            </div>
+            <button mat-icon-button type="button" (click)="removeBeneficiary(index)" aria-label="Remove beneficiary">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  </section>
+</main>

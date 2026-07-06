@@ -22,6 +22,13 @@ const beneficiarySchema = new Schema(
       trim: true,
       match: [/^\d{8}$/, 'Account number must be 8 digits'],
     },
+    ifscCode: {
+      type: String,
+      required: [true, 'IFSC code is required'],
+      trim: true,
+      uppercase: true,
+      match: [/^NEX00\d{4}$/, 'IFSC code must be in format NEX00XXXX'],
+    },
     accountHolderName: {
       type: String,
       required: [true, 'Account holder name is required'],
@@ -47,7 +54,7 @@ const beneficiarySchema = new Schema(
   },
 );
 
-beneficiarySchema.index({ userId: 1, accountNumber: 1 }, { unique: true });
+beneficiarySchema.index({ userId: 1, accountNumber: 1, ifscCode: 1 }, { unique: true });
 
 const Beneficiary = mongoose.model('Beneficiary', beneficiarySchema);
 

@@ -6,7 +6,10 @@ import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import logger from './config/logger.js';
 import { getStoreType } from './config/redis.js';
+import accountRoutes from './routes/account.routes.js';
 import authRoutes from './routes/auth.routes.js';
+import beneficiaryRoutes from './routes/beneficiary.routes.js';
+import transactionRoutes from './routes/transaction.routes.js';
 
 const app = express();
 
@@ -45,6 +48,9 @@ app.get('/health', (_req, res) => {
 });
 
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/accounts', accountRoutes);
+app.use('/api/v1/beneficiaries', beneficiaryRoutes);
+app.use('/api/v1/transactions', transactionRoutes);
 
 /**
  * API v1 base route — feature routes will be mounted here in subsequent steps.

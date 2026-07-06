@@ -1,0 +1,47 @@
+<main class="bank-page">
+  <header class="bank-page__header">
+    <div>
+      <p>Ledger</p>
+      <h1>Transactions</h1>
+    </div>
+    <a mat-stroked-button routerLink="/dashboard">
+      <mat-icon>arrow_back</mat-icon>
+      Dashboard
+    </a>
+  </header>
+
+  <mat-card class="transactions-card">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>receipt_long</mat-icon>
+      <mat-card-title>Credit & Debit History</mat-card-title>
+      <mat-card-subtitle>Account debited and account credited entries will appear here</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (transactions.length === 0) {
+        <div class="empty">
+          <mat-icon>sync_alt</mat-icon>
+          <h2>No transactions yet</h2>
+          <p>Once fund transfers are connected, every credit and debit will show here.</p>
+        </div>
+      }
+
+      @for (transaction of transactions; track transaction._id) {
+        <div class="transaction-row" [class.credit]="isCredit(transaction)">
+          <div>
+            <strong>{{ getTransactionTitle(transaction) }}</strong>
+            <span>
+              {{ transaction.transferMode || 'TRANSFER' }}
+              |
+              {{ isCredit(transaction) ? 'From' : 'To' }}
+              {{ getTransactionAccount(transaction) || '-' }}
+              | {{ transaction.status }}
+              | {{ getTransactionDate(transaction) }}
+            </span>
+          </div>
+          <b>{{ isCredit(transaction) ? '+' : '-' }} INR {{ transaction.amount }}</b>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</main>

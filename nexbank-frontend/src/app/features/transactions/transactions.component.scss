@@ -1,0 +1,74 @@
+@use 'styles/variables' as *;
+
+.bank-page {
+  min-height: 100vh;
+  padding: 28px;
+  color: $nb-text-primary;
+}
+
+.bank-page__header,
+.transactions-card {
+  width: min(100%, $nb-max-content-width);
+  margin: 0 auto;
+}
+
+.bank-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  p {
+    color: $nb-teal-400;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+}
+
+.transactions-card {
+  border: 1px solid $nb-border;
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  min-height: 280px;
+  text-align: center;
+  color: $nb-text-secondary;
+
+  mat-icon {
+    width: 54px;
+    height: 54px;
+    font-size: 54px;
+    color: $nb-teal-400;
+  }
+
+  h2 {
+    margin-top: 14px;
+    color: $nb-text-primary;
+  }
+}
+
+.transaction-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 0;
+  border-bottom: 1px solid $nb-border;
+
+  span {
+    display: block;
+    margin-top: 4px;
+    color: $nb-text-secondary;
+  }
+
+  b {
+    color: $nb-error;
+  }
+
+  &.credit b {
+    color: $nb-success;
+  }
+}

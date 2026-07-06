@@ -8,7 +8,8 @@
 
 .dashboard__header,
 .dashboard__hero,
-.dashboard__grid {
+.dashboard__grid,
+.dashboard__actions {
   width: min(100%, $nb-max-content-width);
   margin: 0 auto;
 }
@@ -17,74 +18,76 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 32px;
+  gap: 18px;
+  margin-bottom: 28px;
+}
 
-  button {
-    flex-shrink: 0;
-  }
+.dashboard__brand,
+.dashboard__nav,
+.dashboard__action,
+.dashboard__account-chip {
+  display: flex;
+  align-items: center;
 }
 
 .dashboard__brand {
-  display: flex;
-  align-items: center;
   gap: 14px;
 
   h1 {
     font-family: $nb-font-heading;
-    font-size: 1.6rem;
-    font-weight: 700;
+    font-size: 1.7rem;
+    font-weight: 800;
     line-height: 1.1;
   }
 }
 
-.dashboard__logo,
-.dashboard__avatar {
+.dashboard__nav {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dashboard__logo {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: $nb-radius-sm;
   background: linear-gradient(135deg, $nb-teal-500, $nb-teal-600);
   color: $nb-navy-900;
   box-shadow: $nb-shadow-glow;
 }
 
-.dashboard__logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-
-  mat-icon {
-    font-size: 28px;
-    width: 28px;
-    height: 28px;
-  }
-}
-
 .dashboard__eyebrow {
   color: $nb-teal-400;
   font-size: 0.78rem;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .dashboard__hero {
   display: flex;
   align-items: center;
-  gap: 22px;
-  padding: 28px;
-  margin-bottom: 24px;
-  border: 1px solid $nb-border;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 220px;
+  padding: 34px;
+  margin-bottom: 22px;
+  border: 1px solid rgba(0, 229, 196, 0.18);
   border-radius: $nb-radius-sm;
-  background: linear-gradient(135deg, rgba(0, 229, 196, 0.12), rgba(17, 31, 53, 0.92));
-  box-shadow: $nb-shadow-md;
+  background:
+    linear-gradient(135deg, rgba(0, 229, 196, 0.16), rgba(17, 31, 53, 0.92)),
+    $nb-surface;
+  box-shadow: $nb-shadow-lg;
 
   h2 {
     font-family: $nb-font-heading;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    line-height: 1.05;
-    margin-bottom: 8px;
+    font-size: clamp(2.4rem, 7vw, 4.8rem);
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 12px;
   }
 
   p:not(.dashboard__eyebrow) {
@@ -92,27 +95,41 @@
   }
 }
 
-.dashboard__avatar {
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  flex: 0 0 auto;
-  font-size: 1.8rem;
-  font-weight: 800;
+.dashboard__account-chip {
+  min-width: 260px;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $nb-radius-sm;
+  background: rgba(5, 13, 24, 0.42);
+
+  span {
+    font-family: $nb-font-heading;
+    font-size: 1.7rem;
+    font-weight: 900;
+  }
+
+  small {
+    color: $nb-text-secondary;
+    font-size: 0.9rem;
+  }
 }
 
 .dashboard__grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
   gap: 18px;
+  margin-bottom: 18px;
 }
 
 .dashboard__panel {
-  min-height: 220px;
+  min-height: 284px;
   border: 1px solid $nb-border;
 
   mat-card-content {
-    padding-top: 16px;
+    padding-top: 18px;
   }
 
   mat-icon[mat-card-avatar] {
@@ -124,22 +141,22 @@
   }
 }
 
-.dashboard__panel--accent {
+.dashboard__panel--account {
   background:
-    linear-gradient(135deg, rgba(0, 229, 196, 0.1), rgba(26, 45, 74, 0.78)),
+    linear-gradient(135deg, rgba(0, 229, 196, 0.08), rgba(26, 45, 74, 0.78)),
     $nb-surface-elevated;
 }
 
 .dashboard__account-number {
   padding: 14px 16px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   border: 1px solid rgba(0, 229, 196, 0.22);
   border-radius: $nb-radius-sm;
   background: rgba(0, 229, 196, 0.08);
   color: $nb-teal-300;
   font-family: $nb-font-heading;
-  font-size: 1.35rem;
-  font-weight: 800;
+  font-size: 1.45rem;
+  font-weight: 900;
   letter-spacing: 0;
 }
 
@@ -147,8 +164,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 12px 0;
+  gap: 18px;
+  padding: 13px 0;
   border-bottom: 1px solid $nb-border;
 
   &:last-child {
@@ -161,15 +178,73 @@
 
   strong {
     color: $nb-text-primary;
-    font-weight: 700;
+    font-weight: 800;
     text-align: right;
     word-break: break-word;
   }
 }
 
-@media (max-width: 900px) {
-  .dashboard__grid {
+.dashboard__actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.dashboard__action {
+  min-height: 120px;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid $nb-border;
+  border-radius: $nb-radius-sm;
+  background: $nb-surface;
+  color: $nb-text-primary;
+  box-shadow: $nb-shadow-sm;
+  transition: transform 160ms ease, border-color 160ms ease;
+
+  &:hover {
+    border-color: rgba(0, 229, 196, 0.38);
+    color: $nb-text-primary;
+    transform: translateY(-2px);
+  }
+
+  mat-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 44px;
+    color: $nb-teal-400;
+  }
+
+  strong,
+  span {
+    display: block;
+  }
+
+  strong {
+    margin-bottom: 6px;
+    font-size: 1.02rem;
+  }
+
+  span {
+    color: $nb-text-secondary;
+    line-height: 1.45;
+  }
+}
+
+@media (max-width: 920px) {
+  .dashboard__hero,
+  .dashboard__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard__grid,
+  .dashboard__actions {
     grid-template-columns: 1fr;
+  }
+
+  .dashboard__account-chip {
+    width: 100%;
+    min-width: 0;
   }
 }
 
@@ -178,19 +253,16 @@
     padding: 18px;
   }
 
-  .dashboard__header {
-    align-items: flex-start;
-    flex-direction: column;
+  .dashboard__hero {
+    padding: 24px;
   }
 
-  .dashboard__hero {
+  .dashboard__row,
+  .dashboard__action {
     align-items: flex-start;
-    flex-direction: column;
-    padding: 22px;
   }
 
   .dashboard__row {
-    align-items: flex-start;
     flex-direction: column;
     gap: 6px;
   }

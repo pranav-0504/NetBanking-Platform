@@ -1,0 +1,88 @@
+@use 'styles/variables' as *;
+
+.bank-page {
+  min-height: 100vh;
+  padding: 28px;
+  color: $nb-text-primary;
+}
+
+.bank-page__header,
+.beneficiary-layout {
+  width: min(100%, $nb-max-content-width);
+  margin: 0 auto;
+}
+
+.bank-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  p {
+    color: $nb-teal-400;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+}
+
+.beneficiary-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 18px;
+
+  mat-card {
+    border: 1px solid $nb-border;
+  }
+}
+
+.beneficiary-form {
+  display: grid;
+  gap: 16px;
+  padding-top: 18px;
+
+  label {
+    color: $nb-text-secondary;
+    font-size: 0.9rem;
+  }
+
+  input {
+    width: 100%;
+    margin-top: 8px;
+    padding: 13px 14px;
+    border: 1px solid $nb-border;
+    border-radius: $nb-radius-sm;
+    background: $nb-navy-900;
+    color: $nb-text-primary;
+  }
+}
+
+.empty {
+  padding: 22px 0;
+  color: $nb-text-secondary;
+}
+
+.beneficiary-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid $nb-border;
+
+  strong,
+  span {
+    display: block;
+  }
+
+  span {
+    margin-top: 4px;
+    color: $nb-text-secondary;
+  }
+}
+
+@media (max-width: 860px) {
+  .beneficiary-layout {
+    grid-template-columns: 1fr;
+  }
+}

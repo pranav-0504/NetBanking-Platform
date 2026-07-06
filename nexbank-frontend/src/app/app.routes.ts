@@ -24,6 +24,24 @@ export const routes: Routes = [
       import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
   },
   {
+    path: 'fund-transfer',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/fund-transfer/fund-transfer.component').then((m) => m.FundTransferComponent),
+  },
+  {
+    path: 'beneficiaries',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/beneficiaries/beneficiaries.component').then((m) => m.BeneficiariesComponent),
+  },
+  {
+    path: 'transactions',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/transactions/transactions.component').then((m) => m.TransactionsComponent),
+  },
+  {
     path: '**',
     redirectTo: '',
   },
