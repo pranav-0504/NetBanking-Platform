@@ -20,7 +20,7 @@ const beneficiarySchema = new Schema(
       type: String,
       required: [true, 'Account number is required'],
       trim: true,
-      match: [/^NX-\d{8}$/, 'Account number must be in format NX-XXXXXXXX'],
+      match: [/^\d{8}$/, 'Account number must be 8 digits'],
     },
     accountHolderName: {
       type: String,

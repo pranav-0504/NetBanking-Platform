@@ -12,6 +12,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 const ACCESS_TOKEN_KEY = 'nexbank_access_token';
 const USER_KEY = 'nexbank_user';
+const ACCOUNT_KEY = 'nexbank_account';
 
 @Component({
   selector: 'app-login',
@@ -75,6 +76,10 @@ export class LoginComponent {
 
         if (response?.data?.user) {
           sessionStorage.setItem(USER_KEY, JSON.stringify(response.data.user));
+        }
+
+        if (response?.data?.account) {
+          sessionStorage.setItem(ACCOUNT_KEY, JSON.stringify(response.data.account));
         }
 
         this.loading.set(false);

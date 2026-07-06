@@ -72,14 +72,27 @@
     <mat-card class="dashboard__panel dashboard__panel--accent">
       <mat-card-header>
         <mat-icon mat-card-avatar>account_balance_wallet</mat-icon>
-        <mat-card-title>Banking</mat-card-title>
-        <mat-card-subtitle>Coming next</mat-card-subtitle>
+        <mat-card-title>Bank Account</mat-card-title>
+        <mat-card-subtitle>Savings details</mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
-        <p>
-          Accounts, transactions, beneficiaries and transfers can plug into this dashboard next.
-        </p>
+        <div class="dashboard__account-number">
+          {{ account?.accountNumber || '--------' }}
+        </div>
+
+        <div class="dashboard__row">
+          <span>IFSC</span>
+          <strong>{{ account?.ifscCode || '-' }}</strong>
+        </div>
+        <div class="dashboard__row">
+          <span>Type</span>
+          <strong>{{ account?.type || 'savings' }}</strong>
+        </div>
+        <div class="dashboard__row">
+          <span>Balance</span>
+          <strong>{{ account?.currency || '₹' }} {{ account?.balance || 0 }}</strong>
+        </div>
       </mat-card-content>
     </mat-card>
   </section>

@@ -15,7 +15,16 @@ const accountSchema = new Schema(
       required: [true, 'Account number is required'],
       unique: true,
       trim: true,
-      match: [/^NX-\d{8}$/, 'Account number must be in format NX-XXXXXXXX'],
+      match: [/^\d{8}$/, 'Account number must be 8 digits'],
+    },
+    ifscCode: {
+      type: String,
+      required: [true, 'IFSC code is required'],
+      unique: true,
+      sparse: true,
+      trim: true,
+      uppercase: true,
+      match: [/^NEX00\d{4}$/, 'IFSC code must be in format NEX00XXXX'],
     },
     type: {
       type: String,
@@ -48,7 +57,6 @@ const accountSchema = new Schema(
 );
 
 accountSchema.index({ userId: 1, type: 1 });
-accountSchema.index({ accountNumber: 1 });
 
 const Account = mongoose.model('Account', accountSchema);
 

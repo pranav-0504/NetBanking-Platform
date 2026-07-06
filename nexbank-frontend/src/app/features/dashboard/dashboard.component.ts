@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 const ACCESS_TOKEN_KEY = 'nexbank_access_token';
 const USER_KEY = 'nexbank_user';
+const ACCOUNT_KEY = 'nexbank_account';
 
 interface DashboardUser {
   firstName?: string;
@@ -18,6 +19,15 @@ interface DashboardUser {
   isMobileVerified?: boolean;
 }
 
+interface DashboardAccount {
+  accountNumber?: string;
+  ifscCode?: string;
+  type?: string;
+  balance?: number;
+  currency?: string;
+  isActive?: boolean;
+}
+
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule, MatButtonModule, MatCardModule, MatIconModule],
@@ -26,6 +36,7 @@ interface DashboardUser {
 })
 export class DashboardComponent {
   user: DashboardUser | null = this.getStoredUser();
+  account: DashboardAccount | null = this.getStoredAccount();
 
   constructor(private router: Router) {}
 
@@ -47,6 +58,7 @@ export class DashboardComponent {
   logout() {
     sessionStorage.removeItem(ACCESS_TOKEN_KEY);
     sessionStorage.removeItem(USER_KEY);
+    sessionStorage.removeItem(ACCOUNT_KEY);
     this.router.navigateByUrl('/auth/login');
   }
 
@@ -61,6 +73,21 @@ export class DashboardComponent {
       return JSON.parse(userJson) as DashboardUser;
     } catch {
       sessionStorage.removeItem(USER_KEY);
+      return null;
+    }
+  }
+
+  private getStoredAccount(): DashboardAccount | null {
+    const accountJson = sessionStorage.getItem(ACCOUNT_KEY);
+
+    if (!accountJson) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(accountJson) as DashboardAccount;
+    } catch {
+      sessionStorage.removeItem(ACCOUNT_KEY);
       return null;
     }
   }

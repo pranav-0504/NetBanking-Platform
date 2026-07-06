@@ -128,11 +128,19 @@
   background:
     linear-gradient(135deg, rgba(0, 229, 196, 0.1), rgba(26, 45, 74, 0.78)),
     $nb-surface-elevated;
+}
 
-  p {
-    color: $nb-text-secondary;
-    line-height: 1.6;
-  }
+.dashboard__account-number {
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(0, 229, 196, 0.22);
+  border-radius: $nb-radius-sm;
+  background: rgba(0, 229, 196, 0.08);
+  color: $nb-teal-300;
+  font-family: $nb-font-heading;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0;
 }
 
 .dashboard__row {
