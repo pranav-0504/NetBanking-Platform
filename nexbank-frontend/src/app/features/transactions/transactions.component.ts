@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -20,6 +20,7 @@ interface TransactionView {
 }
 
 const USER_KEY = 'nexbank_user';
+const REFRESH_LOADER_MS = 2000;
 
 @Component({
   selector: 'app-transactions',
@@ -27,21 +28,43 @@ const USER_KEY = 'nexbank_user';
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss',
 })
-export class TransactionsComponent {
+export class TransactionsComponent implements OnDestroy {
   private transactionService = inject(TransactionService);
 
   transactions: TransactionView[] = [];
+  transactionsLoading = false;
+  private refreshDelayTimer?: number;
   private currentUserId = this.getCurrentUserId();
 
   ngOnInit() {
-    this.transactionService.getTransactions().subscribe({
-      next: (response) => {
-        this.transactions = response?.data || [];
-      },
-      error: (error) => {
-        console.error('Failed to load transactions', error);
-      },
-    });
+    this.refreshTransactions();
+  }
+
+  refreshTransactions() {
+    if (this.transactionsLoading) {
+      return;
+    }
+
+    this.transactionsLoading = true;
+
+    this.refreshDelayTimer = window.setTimeout(() => {
+      this.transactionService.getTransactions().subscribe({
+        next: (response) => {
+          this.transactionsLoading = false;
+          this.transactions = response?.data || [];
+        },
+        error: (error) => {
+          this.transactionsLoading = false;
+          console.error('Failed to load transactions', error);
+        },
+      });
+    }, REFRESH_LOADER_MS);
+  }
+
+  ngOnDestroy() {
+    if (this.refreshDelayTimer) {
+      window.clearTimeout(this.refreshDelayTimer);
+    }
   }
 
   getTransactionTitle(transaction: TransactionView) {

@@ -4,12 +4,15 @@ import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { Subscription, interval, startWith, switchMap } from 'rxjs';
 import { AccountService } from '../../core/services/account.service';
+import { AuthService } from '../../core/services/auth.service';
 
 const ACCESS_TOKEN_KEY = 'nexbank_access_token';
+const REFRESH_TOKEN_KEY = 'nexbank_refresh_token';
 const USER_KEY = 'nexbank_user';
 const ACCOUNT_KEY = 'nexbank_account';
+const REFRESH_LOADER_MS = 2000;
+const AUTO_REFRESH_MS = 3 * 60 * 1000;
 
 interface DashboardUser {
   firstName?: string;
@@ -40,36 +43,55 @@ export class DashboardComponent implements OnInit, OnDestroy {
   user: DashboardUser | null = this.getStoredUser();
   account: DashboardAccount | null = this.getStoredAccount();
   lastUpdated = new Date();
-
-  private balanceSubscription?: Subscription;
+  accountRefreshing = false;
+  private autoRefreshTimer?: number;
+  private refreshDelayTimer?: number;
 
   constructor(
     private router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
-    this.balanceSubscription = interval(5000)
-      .pipe(
-        startWith(0),
-        switchMap(() => this.accountService.getMyAccount())
-      )
-      .subscribe({
+    this.refreshAccount(false);
+  }
+
+  ngOnDestroy() {
+    this.clearRefreshTimers();
+  }
+
+  refreshAccount(userTriggered = true) {
+    if (this.accountRefreshing) {
+      return;
+    }
+
+    if (userTriggered) {
+      this.clearAutoRefreshTimer();
+    }
+
+    this.accountRefreshing = true;
+
+    this.refreshDelayTimer = window.setTimeout(() => {
+      this.accountService.getMyAccount().subscribe({
         next: (response) => {
+          this.accountRefreshing = false;
+
           if (response?.data) {
             this.account = response.data;
             this.lastUpdated = new Date();
             sessionStorage.setItem(ACCOUNT_KEY, JSON.stringify(response.data));
           }
+
+          this.scheduleAutoRefresh();
         },
         error: (error) => {
+          this.accountRefreshing = false;
           console.error('Failed to refresh account balance', error);
+          this.scheduleAutoRefresh();
         },
       });
-  }
-
-  ngOnDestroy() {
-    this.balanceSubscription?.unsubscribe();
+    }, REFRESH_LOADER_MS);
   }
 
   get fullName() {
@@ -100,10 +122,50 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   logout() {
+    this.clearRefreshTimers();
+    const refreshToken = sessionStorage.getItem(REFRESH_TOKEN_KEY) || localStorage.getItem(REFRESH_TOKEN_KEY);
+
     sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+    sessionStorage.removeItem(REFRESH_TOKEN_KEY);
     sessionStorage.removeItem(USER_KEY);
     sessionStorage.removeItem(ACCOUNT_KEY);
+    localStorage.removeItem(ACCESS_TOKEN_KEY);
+    localStorage.removeItem(REFRESH_TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(ACCOUNT_KEY);
+    this.revokeRefreshToken(refreshToken);
     this.router.navigateByUrl('/auth/login');
+  }
+
+  private revokeRefreshToken(refreshToken: string | null) {
+    if (!refreshToken) {
+      return;
+    }
+
+    this.authService.logout(refreshToken).subscribe({
+      error: () => undefined,
+    });
+  }
+
+  private scheduleAutoRefresh() {
+    this.clearAutoRefreshTimer();
+    this.autoRefreshTimer = window.setTimeout(() => this.refreshAccount(false), AUTO_REFRESH_MS);
+  }
+
+  private clearAutoRefreshTimer() {
+    if (this.autoRefreshTimer) {
+      window.clearTimeout(this.autoRefreshTimer);
+      this.autoRefreshTimer = undefined;
+    }
+  }
+
+  private clearRefreshTimers() {
+    this.clearAutoRefreshTimer();
+
+    if (this.refreshDelayTimer) {
+      window.clearTimeout(this.refreshDelayTimer);
+      this.refreshDelayTimer = undefined;
+    }
   }
 
   private getStoredUser(): DashboardUser | null {

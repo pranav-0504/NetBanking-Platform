@@ -1,114 +1,78 @@
-<!-- <p>login works!</p> -->
-<div class="login-page">
+<main class="auth-page">
+  <section class="auth-hero">
+    <a class="auth-brand" routerLink="/">
+      <span>N</span>
+      <strong>NexBank</strong>
+    </a>
 
-    <div class="left-panel">
+    <div class="auth-hero__content">
+      <p>Secure NetBanking</p>
+      <h1>Manage your money with confidence.</h1>
+      <span>Protected sign in, instant transfer access, and a clear dashboard for every account move.</span>
+    </div>
 
-        <div class="content">
-            <h1>NexBank</h1>
+    <div class="auth-stats">
+      <div>
+        <strong>IMPS</strong>
+        <span>Instant payments</span>
+      </div>
+      <div>
+        <strong>NEFT</strong>
+        <span>Scheduled safely</span>
+      </div>
+    </div>
+  </section>
 
-            <h2>Smart Banking for Everyone</h2>
+  <section class="auth-panel">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-card">
+      <div class="auth-card__header">
+        <p>Welcome back</p>
+        <h2>Sign in to NexBank</h2>
+        <span>Use your registered email and password to continue.</span>
+      </div>
 
-            <p>
-                Secure, Fast and Modern Digital Banking Platform.
-            </p>
+      <label class="auth-field">
+        Email address
+        <input type="email" formControlName="email" placeholder="you@example.com" autocomplete="email">
+        @if (email.touched && email.hasError('required')) {
+          <small>Email is required.</small>
+        } @else if (email.touched && email.hasError('email')) {
+          <small>Enter a valid email address.</small>
+        }
+      </label>
+
+      <label class="auth-field">
+        Password
+        <div class="auth-password">
+          <input [type]="hidePassword() ? 'password' : 'text'" formControlName="password" placeholder="Enter password" autocomplete="current-password">
+          <button type="button" (click)="togglePassword()" [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'">
+            <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
         </div>
+        @if (password.touched && password.hasError('required')) {
+          <small>Password is required.</small>
+        } @else if (password.touched && password.hasError('minlength')) {
+          <small>Password must be at least 5 characters.</small>
+        }
+      </label>
 
-    </div>
+      <div class="auth-options">
+        <label>
+          <input type="checkbox" formControlName="rememberMe">
+          Remember me
+        </label>
+        <span>Never share your password</span>
+      </div>
 
-    <div class="right-panel">
+      <button class="auth-submit" type="submit" [disabled]="loginForm.invalid || loading()">
+        <mat-icon>{{ loading() ? 'sync' : 'login' }}</mat-icon>
+        {{ loading() ? 'Signing in...' : 'Sign in' }}
+      </button>
 
-        <form
-            [formGroup]="loginForm"
-            (ngSubmit)="onSubmit()"
-            class="login-card">
-
-            <h2>Welcome Back 👋</h2>
-
-            <p class="subtitle">
-                Login to continue
-            </p>
-
-            <div class="form-group">
-
-                <label>Email</label>
-
-                <input
-                    type="email"
-                    formControlName="email"
-                    placeholder="Enter your email">
-
-                @if(email.touched && email.invalid) {
-                    <small>Email is required.</small>
-                }
-
-            </div>
-
-            <div class="form-group">
-
-                <label>Password</label>
-
-                <div class="password-box">
-
-                    <input
-                        [type]="hidePassword() ? 'password' : 'text'"
-                        formControlName="password"
-                        placeholder="Enter password">
-
-                    <button
-                        type="button"
-                        (click)="togglePassword()">
-
-                        {{ hidePassword() ? 'Show' : 'Hide' }}
-
-                    </button>
-
-                </div>
-
-                @if(password.touched && password.invalid){
-                    <small>Password is required.</small>
-                }
-                
-
-            </div>
-
-            <div class="options">
-
-                <label>
-
-                    <input
-                        type="checkbox"
-                        formControlName="rememberMe">
-
-                    Remember Me
-
-                </label>
-
-                <a routerLink="/auth/forgot-password">
-                    Forgot Password?
-                </a>
-
-            </div>
-
-            <button
-                class="login-btn"
-                type="submit">
-
-                {{ loading() ? 'Logging In...' : 'Login' }}
-
-            </button>
-
-            <div class="register" >
-
-                Don't have an account?
-
-                <a routerLink="/auth/register" style="cursor: pointer;">
-                  Register
-                </a>
-
-            </div>
-
-        </form>
-
-    </div>
-
-</div>
+      <p class="auth-switch">
+        New to NexBank?
+        <a routerLink="/auth/register">Create an account</a>
+      </p>
+    </form>
+  </section>
+</main>

@@ -10,7 +10,19 @@
     </a>
   </header>
 
-  <section class="transfer-layout">
+  @if (transferCompleted) {
+    <section class="transfer-success">
+      <mat-icon class="transfer-success__icon">check_circle</mat-icon>
+      <p>Transaction Successful</p>
+      <h2>{{ successMessage }}</h2>
+      <span>Redirecting to Dashboard in {{ redirectSeconds }} seconds...</span>
+      <a mat-flat-button color="primary" routerLink="/dashboard">
+        <mat-icon>dashboard</mat-icon>
+        Go to Dashboard
+      </a>
+    </section>
+  } @else {
+    <section class="transfer-layout">
     <mat-card class="transfer-card">
       <mat-card-header>
         <mat-icon mat-card-avatar>send</mat-icon>
@@ -20,6 +32,25 @@
 
       <mat-card-content>
         <form [formGroup]="transferForm" class="transfer-form">
+          <div class="beneficiary-picker">
+            <label>
+              Saved beneficiary
+              <select formControlName="beneficiaryId" (change)="selectBeneficiary(transferForm.value.beneficiaryId)">
+                <option value="">{{ beneficiariesLoading ? 'Loading beneficiaries...' : 'Manual transfer' }}</option>
+                @for (beneficiary of beneficiaries; track beneficiary._id) {
+                  <option [value]="beneficiary._id">
+                    {{ beneficiary.nickName }} - {{ beneficiary.accountNumber }}
+                  </option>
+                }
+              </select>
+            </label>
+
+            <a mat-stroked-button routerLink="/beneficiaries">
+              <mat-icon>group_add</mat-icon>
+              Manage
+            </a>
+          </div>
+
           <div class="mode-grid">
             <label [class.active]="transferForm.value.mode === 'IMPS'">
               <input type="radio" value="IMPS" formControlName="mode">
@@ -37,12 +68,12 @@
           <div class="form-grid">
             <label>
               Beneficiary account number
-              <input type="text" maxlength="8" formControlName="accountNumber" placeholder="12345678">
+              <input type="text" maxlength="8" formControlName="accountNumber" placeholder="12345678" [readOnly]="!!transferForm.value.beneficiaryId">
             </label>
 
             <label>
               IFSC code
-              <input type="text" maxlength="9" formControlName="ifscCode" placeholder="NEX001234">
+              <input type="text" maxlength="9" formControlName="ifscCode" placeholder="NEX001234" [readOnly]="!!transferForm.value.beneficiaryId">
             </label>
 
             <label>
@@ -67,7 +98,31 @@
     <aside class="transfer-summary">
       <mat-icon>shield</mat-icon>
       <h2>Secure transfer rules</h2>
-      <p>IMPS will process immediately. NEFT will be queued and marked complete after 5 minutes once backend transfer APIs are connected.</p>
+      <p>Choose a saved beneficiary to fill verified account details instantly. IMPS will process immediately. NEFT will be queued and marked complete after 5 minutes.</p>
     </aside>
   </section>
+  }
+
+  @if (failureMessage) {
+    <div class="transfer-modal-backdrop" role="presentation">
+      <section class="transfer-modal" role="dialog" aria-modal="true" aria-labelledby="transfer-failed-title">
+        <mat-icon>error</mat-icon>
+        <h2 id="transfer-failed-title">Transfer Failed</h2>
+        <p>{{ failureMessage }}</p>
+        <button mat-flat-button color="primary" type="button" (click)="closeFailureModal()">
+          Check Details
+        </button>
+      </section>
+    </div>
+  }
+
+  @if (loading) {
+    <div class="transfer-loader-backdrop" role="status" aria-live="polite">
+      <section class="transfer-loader">
+        <div class="transfer-loader__spinner"></div>
+        <h2>Processing Transfer</h2>
+        <p>Please wait while we verify and submit your payment.</p>
+      </section>
+    </div>
+  }
 </main>

@@ -4,10 +4,16 @@
       <p>Ledger</p>
       <h1>Transactions</h1>
     </div>
-    <a mat-stroked-button routerLink="/dashboard">
-      <mat-icon>arrow_back</mat-icon>
-      Dashboard
-    </a>
+    <div class="bank-page__actions">
+      <button mat-stroked-button type="button" (click)="refreshTransactions()" [disabled]="transactionsLoading">
+        <mat-icon [class.bank-page__refresh-icon--spinning]="transactionsLoading">refresh</mat-icon>
+        {{ transactionsLoading ? 'Refreshing...' : 'Refresh' }}
+      </button>
+      <a mat-stroked-button routerLink="/dashboard">
+        <mat-icon>arrow_back</mat-icon>
+        Dashboard
+      </a>
+    </div>
   </header>
 
   <mat-card class="transactions-card">
@@ -18,7 +24,13 @@
     </mat-card-header>
 
     <mat-card-content>
-      @if (transactions.length === 0) {
+      @if (transactionsLoading) {
+        <div class="transactions-loader" role="status" aria-live="polite">
+          <div class="transactions-loader__spinner"></div>
+          <h2>Loading transactions</h2>
+          <p>Please wait while we fetch your latest credit and debit history.</p>
+        </div>
+      } @else if (transactions.length === 0) {
         <div class="empty">
           <mat-icon>sync_alt</mat-icon>
           <h2>No transactions yet</h2>
@@ -26,21 +38,23 @@
         </div>
       }
 
-      @for (transaction of transactions; track transaction._id) {
-        <div class="transaction-row" [class.credit]="isCredit(transaction)">
-          <div>
-            <strong>{{ getTransactionTitle(transaction) }}</strong>
-            <span>
-              {{ transaction.transferMode || 'TRANSFER' }}
-              |
-              {{ isCredit(transaction) ? 'From' : 'To' }}
-              {{ getTransactionAccount(transaction) || '-' }}
-              | {{ transaction.status }}
-              | {{ getTransactionDate(transaction) }}
-            </span>
+      @if (!transactionsLoading) {
+        @for (transaction of transactions; track transaction._id) {
+          <div class="transaction-row" [class.credit]="isCredit(transaction)">
+            <div>
+              <strong>{{ getTransactionTitle(transaction) }}</strong>
+              <span>
+                {{ transaction.transferMode || 'TRANSFER' }}
+                |
+                {{ isCredit(transaction) ? 'From' : 'To' }}
+                {{ getTransactionAccount(transaction) || '-' }}
+                | {{ transaction.status }}
+                | {{ getTransactionDate(transaction) }}
+              </span>
+            </div>
+            <b>{{ isCredit(transaction) ? '+' : '-' }} INR {{ transaction.amount }}</b>
           </div>
-          <b>{{ isCredit(transaction) ? '+' : '-' }} INR {{ transaction.amount }}</b>
-        </div>
+        }
       }
     </mat-card-content>
   </mat-card>

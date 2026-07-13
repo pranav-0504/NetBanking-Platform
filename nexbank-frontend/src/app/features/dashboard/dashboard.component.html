@@ -15,6 +15,10 @@
         <mat-icon>receipt_long</mat-icon>
         Transactions
       </a>
+      <button mat-stroked-button type="button" (click)="refreshAccount()" [disabled]="accountRefreshing">
+        <mat-icon [class.dashboard__refresh-icon--spinning]="accountRefreshing">refresh</mat-icon>
+        {{ accountRefreshing ? 'Refreshing...' : 'Refresh' }}
+      </button>
       <button mat-stroked-button type="button" (click)="logout()">
         <mat-icon>logout</mat-icon>
         Logout

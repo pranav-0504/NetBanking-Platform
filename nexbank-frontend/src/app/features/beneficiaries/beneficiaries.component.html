@@ -61,9 +61,15 @@
               <strong>{{ beneficiary.nickName }}</strong>
               <span>{{ beneficiary.accountHolderName || 'Verified payee' }} | {{ beneficiary.accountNumber }} | {{ beneficiary.ifscCode }}</span>
             </div>
-            <button mat-icon-button type="button" (click)="removeBeneficiary(index)" aria-label="Remove beneficiary">
-              <mat-icon>delete</mat-icon>
-            </button>
+            <div class="beneficiary-actions">
+              <a class="send-money-action" [routerLink]="['/fund-transfer']" [queryParams]="{ beneficiaryId: beneficiary._id }" aria-label="Send money through IMPS or NEFT">
+                <mat-icon>send</mat-icon>
+                <span>Send Money through IMPS/NEFT</span>
+              </a>
+              <button mat-icon-button type="button" (click)="removeBeneficiary(index)" aria-label="Remove beneficiary">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
           </div>
         }
       </mat-card-content>

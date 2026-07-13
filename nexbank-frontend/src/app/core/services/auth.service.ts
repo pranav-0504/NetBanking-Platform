@@ -21,4 +21,12 @@ export class AuthService {
     return this.http.post(`${this.api}/login`, data);
   }
 
+  refreshSession(refreshToken: string): Observable<any> {
+    return this.http.post(`${this.api}/refresh`, { refreshToken });
+  }
+
+  logout(refreshToken: string | null): Observable<any> {
+    return this.http.post(`${this.api}/logout`, { refreshToken });
+  }
+
 }

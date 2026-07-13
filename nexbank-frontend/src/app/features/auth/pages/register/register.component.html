@@ -1,208 +1,127 @@
-<!-- <p>register works!</p> -->
-<div class="login-page">
+<main class="auth-page">
+  <section class="auth-hero">
+    <a class="auth-brand" routerLink="/">
+      <span>N</span>
+      <strong>NexBank</strong>
+    </a>
 
-  <div class="left-panel">
-    <div class="content">
-      <h1>NexBank</h1>
-      <h2>Create Your Account</h2>
-      <p>
-        Join NexBank and experience secure digital banking.
-      </p>
+    <div class="auth-hero__content">
+      <p>Open your account</p>
+      <h1>Start banking with a secure digital profile.</h1>
+      <span>Create your NexBank profile, receive account details, and begin using transfers and beneficiaries.</span>
     </div>
-  </div>
 
-  <div class="right-panel">
+    <div class="auth-stats">
+      <div>
+        <strong>INR</strong>
+        <span>Savings account</span>
+      </div>
+      <div>
+        <strong>24/7</strong>
+        <span>Online access</span>
+      </div>
+    </div>
+  </section>
 
-    <form
-      [formGroup]="registerForm"
-      (ngSubmit)="onSubmit()"
-      class="login-card">
-
-      <h2 >Create Account</h2>
-
-      <p class="subtitle">
-        Fill in your details
-      </p>
-
-      <div class="name-row">
-
-        <div class="form-group">
-          <label>First Name</label>
-          <input
-            type="text"
-            formControlName="firstName"
-            placeholder="First Name"
-          >
-
-          <!--! Validation message bro: -->
-          @if(firstName.touched && firstName.hasError('required')) {
-            <small>First Name is required.</small>
-          }
-
-        </div>
-
-        <div class="form-group">
-          <label>Last Name</label>
-          <input
-            type="text"
-            formControlName="lastName"
-            placeholder="Last Name"
-          >
-          
-          @if(lastName.touched && lastName.hasError('required')) {
-            <small>Last Name is required.</small>
-          }
-
-        </div>
-
+  <section class="auth-panel">
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-card">
+      <div class="auth-card__header">
+        <p>Create account</p>
+        <h2>Register with NexBank</h2>
+        <span>Use accurate details. Your account number and IFSC are created after registration.</span>
       </div>
 
-      <div class="form-group">
-        <label>Email</label>
-        <input
-          type="email"
-          formControlName="email"
-          placeholder="Enter Email"
-        >
+      <div class="auth-grid">
+        <label class="auth-field">
+          First name
+          <input type="text" formControlName="firstName" placeholder="Pranav" autocomplete="given-name">
+          @if (firstName.touched && firstName.hasError('required')) {
+            <small>First name is required.</small>
+          } @else if (firstName.touched && firstName.hasError('minlength')) {
+            <small>First name must be at least 2 characters.</small>
+          }
+        </label>
 
-        @if(email.touched){
-          @if(email.hasError('required')) {
-            <small>Email is required.</small>
-          } 
-          @if(email.hasError('email')) {
-            <small>Invalid email format, Please Enter a valid Email.</small>
-          } 
+        <label class="auth-field">
+          Last name
+          <input type="text" formControlName="lastName" placeholder="Sharma" autocomplete="family-name">
+          @if (lastName.touched && lastName.hasError('required')) {
+            <small>Last name is required.</small>
+          } @else if (lastName.touched && lastName.hasError('minlength')) {
+            <small>Last name must be at least 2 characters.</small>
+          }
+        </label>
+      </div>
+
+      <label class="auth-field">
+        Email address
+        <input type="email" formControlName="email" placeholder="you@example.com" autocomplete="email">
+        @if (email.touched && email.hasError('required')) {
+          <small>Email is required.</small>
+        } @else if (email.touched && email.hasError('email')) {
+          <small>Enter a valid email address.</small>
         }
+      </label>
 
-
-      </div>
-
-      <div class="form-group">
-        <label>Mobile Number</label>
-        <input
-          type="text"
-          formControlName="mobile"
-          placeholder="Enter your mobile number"
-        >
-
-        <!--! Validation Message: -->
-        @if(mobile.touched){
-
-          @if(mobile.hasError('required')){
-            <small>Mobile number is required.</small>
-          }
-
-          @if(mobile.hasError('pattern')){
-            <small>Enter a valid 10-digit mobile number.</small>
-          }
+      <label class="auth-field">
+        Mobile number
+        <input type="text" maxlength="10" formControlName="mobile" placeholder="9876543210" autocomplete="tel">
+        @if (mobile.touched && mobile.hasError('required')) {
+          <small>Mobile number is required.</small>
+        } @else if (mobile.touched && mobile.hasError('pattern')) {
+          <small>Enter a valid Indian 10-digit mobile number.</small>
         }
+      </label>
 
-      </div>
-
-      <div class="form-group">
-        <label>Password</label>
-
-        <div class="password-box">
-          
-          <input
-            [type]="hidePassword() ? 'password' : 'text'"
-            formControlName="password"
-          >
-
-          @if(password.touched){
-            @if(password.hasError('required')){
-              <small>Password is required.</small>
-            }
-            @if(password.hasError('minlength')){
-              <small>Password must be at least 5 characters.</small>
-            }
+      <div class="auth-grid">
+        <label class="auth-field">
+          Password
+          <div class="auth-password">
+            <input [type]="hidePassword() ? 'password' : 'text'" formControlName="password" placeholder="Create password" autocomplete="new-password">
+            <button type="button" (click)="togglePassword()" [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'">
+              <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+            </button>
+          </div>
+          @if (password.touched && password.hasError('required')) {
+            <small>Password is required.</small>
+          } @else if (password.touched && password.hasError('minlength')) {
+            <small>Password must be at least 5 characters.</small>
           }
+        </label>
 
-          <button
-            type="button"
-            (click)="togglePassword()">
-
-            {{ hidePassword() ? 'Show' : 'Hide' }}
-
-          </button>
-        </div>
-
-      </div>
-
-      <div class="form-group">
-
-        <label>Confirm Password</label>
-
-        <div class="password-box">
-
-          <input
-            [type]="hideConfirmPassword() ? 'password' : 'text'"
-            formControlName="confirmPassword"
-          >
-          
-          @if(registerForm.hasError('passwordMismatch') && confirmPassword.touched){
-            <small>
-                ❌ Passwords do not match ❌.
-            </small>
+        <label class="auth-field">
+          Confirm password
+          <div class="auth-password">
+            <input [type]="hideConfirmPassword() ? 'password' : 'text'" formControlName="confirmPassword" placeholder="Confirm password" autocomplete="new-password">
+            <button type="button" (click)="toggleConfirmPassword()" [attr.aria-label]="hideConfirmPassword() ? 'Show password' : 'Hide password'">
+              <mat-icon>{{ hideConfirmPassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+            </button>
+          </div>
+          @if (confirmPassword.touched && confirmPassword.hasError('required')) {
+            <small>Confirm password is required.</small>
+          } @else if (confirmPassword.touched && registerForm.hasError('passwordMismatch')) {
+            <small>Passwords do not match.</small>
           }
-
-          @if(confirmPassword.touched && confirmPassword.hasError('required')){
-            <small>Confirm Password is required.</small>
-          }
-
-          <button
-            type="button"
-            (click)="toggleConfirmPassword()">
-
-            {{ hideConfirmPassword() ? 'Show' : 'Hide' }}
-
-          </button>
-
-        </div>
-
+        </label>
       </div>
 
-      <div class="checkbox">
+      <label class="auth-consent">
+        <input type="checkbox" formControlName="acceptTerms">
+        <span>I accept the terms and conditions</span>
+      </label>
+      @if (acceptTerms.touched && acceptTerms.hasError('required')) {
+        <small class="auth-error">Please accept the terms and conditions.</small>
+      }
 
-        <input
-          type="checkbox"
-          formControlName="acceptTerms"
-        >
-
-        @if(acceptTerms.touched && acceptTerms.hasError('required')){
-          <small>Please accept Terms & Conditions & then proceed.</small>
-        }
-        @if(acceptTerms.touched && acceptTerms.hasError('requiredTrue')){
-          <small>Please accept Terms & Conditions & then proceed.</small>
-        }
-
-        <span>I accept Terms & Conditions</span>
-
-      </div>
-
-      <button
-        
-        class="login-btn"
-        type="submit"
-        [disabled]="registerForm.invalid || loading()">
-
-        {{loading() ? 'Registering...' : 'Register'}}
-        <!-- Register -->
-
+      <button class="auth-submit" type="submit" [disabled]="registerForm.invalid || loading()">
+        <mat-icon>{{ loading() ? 'sync' : 'person_add' }}</mat-icon>
+        {{ loading() ? 'Creating account...' : 'Create account' }}
       </button>
 
-      <div class="register">
-
-        Already have an account?
-
-        <a routerLink="/auth/login" style="cursor: pointer;">
-          Login
-        </a>
-
-      </div>
-
+      <p class="auth-switch">
+        Already registered?
+        <a routerLink="/auth/login">Sign in</a>
+      </p>
     </form>
-
-  </div>
-
-</div>
+  </section>
+</main>

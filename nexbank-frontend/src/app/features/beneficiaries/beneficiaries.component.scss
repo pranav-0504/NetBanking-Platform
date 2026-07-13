@@ -81,8 +81,45 @@
   }
 }
 
+.beneficiary-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 4px;
+}
+
+.send-money-action {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-width: 108px;
+  padding: 6px 8px;
+  border: 1px solid rgba(0, 229, 196, 0.24);
+  border-radius: $nb-radius-sm;
+  color: $nb-teal-400;
+  text-align: center;
+  text-decoration: none;
+
+  mat-icon {
+    width: 22px;
+    height: 22px;
+    font-size: 22px;
+  }
+
+  span {
+    margin: 0;
+    color: $nb-text-primary;
+    font-size: 0.72rem;
+    line-height: 1.2;
+  }
+}
+
 @media (max-width: 860px) {
   .beneficiary-layout {
     grid-template-columns: 1fr;
+  }
+
+  .beneficiary-item {
+    align-items: flex-start;
   }
 }

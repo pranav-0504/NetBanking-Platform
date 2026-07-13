@@ -5,6 +5,31 @@ import User from '../models/user.model.js';
 
 const MAX_ACCOUNT_GENERATION_ATTEMPTS = 20;
 
+const createAccessToken = (user) =>
+  jwt.sign(
+    {
+      userId: user._id,
+      email: user.email,
+      role: user.role,
+    },
+    process.env.JWT_ACCESS_SECRET,
+    {
+      expiresIn: process.env.JWT_ACCESS_EXPIRY || '15m',
+    },
+  );
+
+const createRefreshToken = (user) =>
+  jwt.sign(
+    {
+      userId: user._id,
+      tokenVersion: Date.now(),
+    },
+    process.env.JWT_REFRESH_SECRET || process.env.JWT_ACCESS_SECRET,
+    {
+      expiresIn: process.env.JWT_REFRESH_EXPIRY || '7d',
+    },
+  );
+
 const toPublicUser = (user) => {
   const response = user.toObject();
   delete response.password;
@@ -107,17 +132,11 @@ export const loginUser = async ({ email, password }) => {
     throw error;
   }
 
-  const accessToken = jwt.sign(
-    {
-      userId: user._id,
-      email: user.email,
-      role: user.role,
-    },
-    process.env.JWT_ACCESS_SECRET,
-    {
-      expiresIn: process.env.JWT_ACCESS_EXPIRY || '15m',
-    },
-  );
+  const accessToken = createAccessToken(user);
+  const refreshToken = createRefreshToken(user);
+
+  user.refreshToken = refreshToken;
+  await user.save();
 
   const account = await Account.findOne({
     userId: user._id,
@@ -129,5 +148,61 @@ export const loginUser = async ({ email, password }) => {
     user: toPublicUser(user),
     account,
     accessToken,
+    refreshToken,
   };
+};
+
+export const refreshUserSession = async (refreshToken) => {
+  if (!refreshToken) {
+    const error = new Error('Refresh token is required.');
+    error.statusCode = 401;
+    throw error;
+  }
+
+  let decodedToken;
+
+  try {
+    decodedToken = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET || process.env.JWT_ACCESS_SECRET,
+    );
+  } catch {
+    const error = new Error('Refresh token is invalid or expired.');
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const user = await User.findOne({
+    _id: decodedToken.userId,
+    refreshToken,
+  });
+
+  if (!user) {
+    const error = new Error('Refresh token is invalid or expired.');
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const accessToken = createAccessToken(user);
+
+  const account = await Account.findOne({
+    userId: user._id,
+    type: 'savings',
+    isActive: true,
+  });
+
+  return {
+    user: toPublicUser(user),
+    account,
+    accessToken,
+    refreshToken,
+  };
+};
+
+export const logoutUser = async (refreshToken) => {
+  if (!refreshToken) {
+    return;
+  }
+
+  await User.updateOne({ refreshToken }, { $set: { refreshToken: null } });
 };

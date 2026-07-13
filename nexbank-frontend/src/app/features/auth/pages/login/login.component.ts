@@ -1,31 +1,28 @@
-import { Component, signal } from '@angular/core';
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators,
-  FormGroup,
-} from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Component, signal } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../../core/services/auth.service';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AuthService } from '../../../../core/services/auth.service';
 
 const ACCESS_TOKEN_KEY = 'nexbank_access_token';
+const REFRESH_TOKEN_KEY = 'nexbank_refresh_token';
 const USER_KEY = 'nexbank_user';
 const ACCOUNT_KEY = 'nexbank_account';
+const REMEMBERED_EMAIL_KEY = 'nexbank_remembered_email';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatSnackBarModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatIconModule, MatSnackBarModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss'
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-
   hidePassword = signal(true);
   loading = signal(false);
 
-  loginForm!: FormGroup;
+  loginForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -33,13 +30,13 @@ export class LoginComponent {
     private router: Router,
     private snackBar: MatSnackBar
   ) {
+    const rememberedEmail = localStorage.getItem(REMEMBERED_EMAIL_KEY) || '';
 
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(2)]],
-      rememberMe: [false],
+      email: [rememberedEmail, [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(5)]],
+      rememberMe: [!!rememberedEmail],
     });
-
   }
 
   togglePassword() {
@@ -47,54 +44,71 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    
-    if (this.loginForm.invalid) {
+    if (this.loginForm.invalid || this.loading()) {
       this.loginForm.markAllAsTouched();
       return;
     }
 
     this.loading.set(true);
 
+    const rememberMe = !!this.loginForm.value.rememberMe;
     const payload = {
-      email: this.loginForm.value.email,
+      email: String(this.loginForm.value.email || '').trim().toLowerCase(),
       password: this.loginForm.value.password,
     };
 
     this.authService.login(payload).subscribe({
-      
       next: (response) => {
-        console.log('Login successful:', response);
         const accessToken = this.getAccessToken(response);
-        
+
         if (!accessToken) {
           this.loading.set(false);
           this.showMessage('Login successful, but token missing in response.');
           return;
         }
 
-        sessionStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+        this.persistAuthValue(ACCESS_TOKEN_KEY, accessToken, rememberMe);
+        this.persistAuthValue(REFRESH_TOKEN_KEY, this.getRefreshToken(response) || '', rememberMe);
 
         if (response?.data?.user) {
-          sessionStorage.setItem(USER_KEY, JSON.stringify(response.data.user));
+          this.persistAuthValue(USER_KEY, JSON.stringify(response.data.user), rememberMe);
         }
 
         if (response?.data?.account) {
-          sessionStorage.setItem(ACCOUNT_KEY, JSON.stringify(response.data.account));
+          this.persistAuthValue(ACCOUNT_KEY, JSON.stringify(response.data.account), rememberMe);
+        }
+
+        if (rememberMe) {
+          localStorage.setItem(REMEMBERED_EMAIL_KEY, payload.email);
+        } else {
+          localStorage.removeItem(REMEMBERED_EMAIL_KEY);
+          localStorage.removeItem(ACCESS_TOKEN_KEY);
+          localStorage.removeItem(REFRESH_TOKEN_KEY);
+          localStorage.removeItem(USER_KEY);
+          localStorage.removeItem(ACCOUNT_KEY);
         }
 
         this.loading.set(false);
-        this.showMessage('Login Successful');
+        this.showMessage('Login successful');
         this.router.navigateByUrl('/dashboard');
       },
       error: (error) => {
-        console.error('Login Failed');
-        console.error(error);
-
         this.loading.set(false);
         this.showMessage(error?.error?.message || 'Invalid email or password');
-      }
-
+      },
     });
+  }
+
+  private persistAuthValue(key: string, value: string, rememberMe: boolean) {
+    if (!value) {
+      return;
+    }
+
+    sessionStorage.setItem(key, value);
+
+    if (rememberMe) {
+      localStorage.setItem(key, value);
+    }
   }
 
   private getAccessToken(response: any): string | null {
@@ -107,10 +121,13 @@ export class LoginComponent {
     );
   }
 
+  private getRefreshToken(response: any): string | null {
+    return response?.data?.refreshToken || response?.refreshToken || null;
+  }
+
   private showMessage(message: string) {
     this.snackBar.open(message, 'Close', {
       duration: 6000,
-      panelClass: ['success-snackbar'],
       horizontalPosition: 'right',
       verticalPosition: 'top',
     });

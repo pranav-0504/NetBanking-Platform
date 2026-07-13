@@ -1,4 +1,5 @@
 import Account from '../models/account.model.js';
+import Beneficiary from '../models/beneficiary.model.js';
 import Transaction from '../models/transaction.model.js';
 
 const generateTxnId = () => `NXTXN${Date.now()}${Math.floor(1000 + Math.random() * 9000)}`;
@@ -55,7 +56,8 @@ export const listTransactions = async (req, res) => {
 
 export const transferFunds = async (req, res) => {
   try {
-    const { accountNumber, ifscCode, amount, mode, note } = req.body;
+    const { beneficiaryId, amount, mode, note } = req.body;
+    let { accountNumber, ifscCode } = req.body;
     const transferAmount = Number(amount);
     const transferMode = String(mode || '').toUpperCase();
 
@@ -70,6 +72,30 @@ export const transferFunds = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Transfer mode must be IMPS or NEFT',
+      });
+    }
+
+    if (beneficiaryId) {
+      const beneficiary = await Beneficiary.findOne({
+        _id: beneficiaryId,
+        userId: req.user.userId,
+      });
+
+      if (!beneficiary) {
+        return res.status(404).json({
+          success: false,
+          message: 'Beneficiary not found',
+        });
+      }
+
+      accountNumber = beneficiary.accountNumber;
+      ifscCode = beneficiary.ifscCode;
+    }
+
+    if (!accountNumber || !ifscCode) {
+      return res.status(400).json({
+        success: false,
+        message: 'Beneficiary account and IFSC are required',
       });
     }
 
