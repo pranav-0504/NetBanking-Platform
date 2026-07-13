@@ -68,6 +68,10 @@ export class TransactionsComponent implements OnDestroy {
   }
 
   getTransactionTitle(transaction: TransactionView) {
+    if (transaction.transferMode === 'NEFT' && transaction.status === 'pending') {
+      return this.isCredit(transaction) ? 'NEFT credit pending' : 'NEFT debit scheduled';
+    }
+
     return this.isCredit(transaction) ? 'Account credited' : 'Account debited';
   }
 
@@ -83,6 +87,14 @@ export class TransactionsComponent implements OnDestroy {
 
   getTransactionDate(transaction: TransactionView) {
     return transaction.createdAt ? new Date(transaction.createdAt).toLocaleString() : '-';
+  }
+
+  getTransactionAmount(transaction: TransactionView) {
+    if (transaction.transferMode === 'NEFT' && transaction.status === 'pending') {
+      return `Pending INR ${transaction.amount}`;
+    }
+
+    return `${this.isCredit(transaction) ? '+' : '-'} INR ${transaction.amount}`;
   }
 
   private getCurrentUserId() {

@@ -94,6 +94,38 @@
     </mat-card>
   </section>
 
+  <section class="dashboard__notifications">
+    <div class="dashboard__notifications-header">
+      <div>
+        <p class="dashboard__eyebrow">Notifications</p>
+        <h2>NEFT & account alerts</h2>
+      </div>
+      <button mat-stroked-button type="button" (click)="markNotificationsRead()" [disabled]="unreadNotificationsCount === 0">
+        <mat-icon>done_all</mat-icon>
+        Mark read
+      </button>
+    </div>
+
+    @if (notificationsLoading && notifications.length === 0) {
+      <p class="dashboard__notification-empty">Loading notifications...</p>
+    } @else if (notifications.length === 0) {
+      <p class="dashboard__notification-empty">No notifications yet.</p>
+    }
+
+    @for (notification of notifications; track notification._id) {
+      <article class="dashboard__notification" [class.unread]="!notification.isRead">
+        <mat-icon>{{ notification.type === 'credit' ? 'payments' : 'notifications' }}</mat-icon>
+        <div>
+          <strong>{{ notification.title }}</strong>
+          <span>{{ notification.message }}</span>
+        </div>
+        @if (!notification.isRead) {
+          <small>New</small>
+        }
+      </article>
+    }
+  </section>
+
   <section class="dashboard__actions">
     <a class="dashboard__action" routerLink="/fund-transfer">
       <mat-icon>send</mat-icon>

@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { AccountService } from '../../core/services/account.service';
 import { AuthService } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 const ACCESS_TOKEN_KEY = 'nexbank_access_token';
 const REFRESH_TOKEN_KEY = 'nexbank_refresh_token';
@@ -13,6 +14,7 @@ const USER_KEY = 'nexbank_user';
 const ACCOUNT_KEY = 'nexbank_account';
 const REFRESH_LOADER_MS = 2000;
 const AUTO_REFRESH_MS = 3 * 60 * 1000;
+const NOTIFICATION_REFRESH_MS = 20 * 1000;
 
 interface DashboardUser {
   firstName?: string;
@@ -33,6 +35,15 @@ interface DashboardAccount {
   isActive?: boolean;
 }
 
+interface DashboardNotification {
+  _id: string;
+  title: string;
+  message: string;
+  type: string;
+  isRead: boolean;
+  createdAt?: string;
+}
+
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule, RouterLink, MatButtonModule, MatCardModule, MatIconModule],
@@ -42,19 +53,25 @@ interface DashboardAccount {
 export class DashboardComponent implements OnInit, OnDestroy {
   user: DashboardUser | null = this.getStoredUser();
   account: DashboardAccount | null = this.getStoredAccount();
+  notifications: DashboardNotification[] = [];
   lastUpdated = new Date();
   accountRefreshing = false;
+  notificationsLoading = false;
   private autoRefreshTimer?: number;
+  private notificationRefreshTimer?: number;
   private refreshDelayTimer?: number;
 
   constructor(
     private router: Router,
     private accountService: AccountService,
-    private authService: AuthService
+    private authService: AuthService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit() {
     this.refreshAccount(false);
+    this.loadNotifications();
+    this.scheduleNotificationRefresh();
   }
 
   ngOnDestroy() {
@@ -137,6 +154,43 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/auth/login');
   }
 
+  get unreadNotificationsCount() {
+    return this.notifications.filter((notification) => !notification.isRead).length;
+  }
+
+  markNotificationsRead() {
+    if (this.unreadNotificationsCount === 0) {
+      return;
+    }
+
+    this.notificationService.markAllRead().subscribe({
+      next: () => {
+        this.notifications = this.notifications.map((notification) => ({
+          ...notification,
+          isRead: true,
+        }));
+      },
+      error: (error) => {
+        console.error('Failed to mark notifications read', error);
+      },
+    });
+  }
+
+  private loadNotifications() {
+    this.notificationsLoading = true;
+
+    this.notificationService.getNotifications().subscribe({
+      next: (response) => {
+        this.notificationsLoading = false;
+        this.notifications = response?.data || [];
+      },
+      error: (error) => {
+        this.notificationsLoading = false;
+        console.error('Failed to load notifications', error);
+      },
+    });
+  }
+
   private revokeRefreshToken(refreshToken: string | null) {
     if (!refreshToken) {
       return;
@@ -162,10 +216,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private clearRefreshTimers() {
     this.clearAutoRefreshTimer();
 
+    if (this.notificationRefreshTimer) {
+      window.clearInterval(this.notificationRefreshTimer);
+      this.notificationRefreshTimer = undefined;
+    }
+
     if (this.refreshDelayTimer) {
       window.clearTimeout(this.refreshDelayTimer);
       this.refreshDelayTimer = undefined;
     }
+  }
+
+  private scheduleNotificationRefresh() {
+    this.notificationRefreshTimer = window.setInterval(() => {
+      this.loadNotifications();
+    }, NOTIFICATION_REFRESH_MS);
   }
 
   private getStoredUser(): DashboardUser | null {

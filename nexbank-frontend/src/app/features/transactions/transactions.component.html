@@ -52,7 +52,7 @@
                 | {{ getTransactionDate(transaction) }}
               </span>
             </div>
-            <b>{{ isCredit(transaction) ? '+' : '-' }} INR {{ transaction.amount }}</b>
+            <b>{{ getTransactionAmount(transaction) }}</b>
           </div>
         }
       }
