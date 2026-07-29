@@ -14,6 +14,7 @@ const USER_KEY = 'nexbank_user';
 const ACCOUNT_KEY = 'nexbank_account';
 const REFRESH_LOADER_MS = 2000;
 const AUTO_REFRESH_MS = 3 * 60 * 1000;
+const LOGOUT_LOADING_MS = 1500;
 
 interface DashboardUser {
   firstName?: string;
@@ -45,6 +46,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   account: DashboardAccount | null = this.getStoredAccount();
   lastUpdated = new Date();
   accountRefreshing = false;
+  loggingOut = false;
   private autoRefreshTimer?: number;
   private refreshDelayTimer?: number;
 
@@ -124,11 +126,19 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   logout() {
+    if (this.loggingOut) {
+      return;
+    }
+
+    this.loggingOut = true;
     this.clearRefreshTimers();
     const refreshToken = sessionStorage.getItem(REFRESH_TOKEN_KEY) || localStorage.getItem(REFRESH_TOKEN_KEY);
-    this.sessionService.endSession(false);
     this.revokeRefreshToken(refreshToken);
-    this.router.navigateByUrl('/auth/login');
+
+    window.setTimeout(() => {
+      this.sessionService.endSession(false);
+      this.router.navigateByUrl('/auth/login');
+    }, LOGOUT_LOADING_MS);
   }
 
   private revokeRefreshToken(refreshToken: string | null) {

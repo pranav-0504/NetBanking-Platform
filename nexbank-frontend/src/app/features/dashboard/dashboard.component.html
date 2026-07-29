@@ -19,9 +19,9 @@
         <mat-icon [class.dashboard__refresh-icon--spinning]="accountRefreshing">refresh</mat-icon>
         {{ accountRefreshing ? 'Refreshing...' : 'Refresh' }}
       </button>
-      <button mat-stroked-button type="button" (click)="logout()">
-        <mat-icon>logout</mat-icon>
-        Logout
+      <button mat-stroked-button type="button" (click)="logout()" [disabled]="loggingOut">
+        <mat-icon [class.dashboard__logout-icon--spinning]="loggingOut">{{ loggingOut ? 'progress_activity' : 'logout' }}</mat-icon>
+        {{ loggingOut ? 'Signing out...' : 'Logout' }}
       </button>
     </nav>
   </header>
@@ -120,3 +120,13 @@
     </a>
   </section>
 </main>
+
+@if (loggingOut) {
+  <div class="dashboard__logout-loader" role="status" aria-live="polite" aria-label="Signing out">
+    <div class="dashboard__logout-loader-card">
+      <div class="dashboard__logout-loader-spinner"></div>
+      <strong>Signing out securely</strong>
+      <span>Please wait...</span>
+    </div>
+  </div>
+}
