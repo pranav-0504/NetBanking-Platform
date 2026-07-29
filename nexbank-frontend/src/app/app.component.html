@@ -1,1 +1,23 @@
 <router-outlet />
+
+@if (session.showTimeoutWarning()) {
+  <div class="session-timeout" role="dialog" aria-modal="true" aria-labelledby="session-timeout-title">
+    <div class="session-timeout__backdrop"></div>
+    <section class="session-timeout__dialog">
+      @if (session.isLoggingOut()) {
+        <div class="session-timeout__spinner" aria-hidden="true"></div>
+        <h2 id="session-timeout-title">Signing you out</h2>
+        <p>Your session has ended. Please wait while we securely sign you out.</p>
+      } @else {
+        <p class="session-timeout__eyebrow">Session timeout warning</p>
+        <h2 id="session-timeout-title">Your session will expire soon</h2>
+        <p>You have <strong>{{ session.secondsRemaining() }}</strong> seconds remaining. Continue your session or log out now.</p>
+        <div class="session-timeout__timer" aria-live="polite">{{ session.secondsRemaining() }}</div>
+        <div class="session-timeout__actions">
+          <button type="button" class="session-timeout__logout" (click)="session.logout()">Log out</button>
+          <button type="button" class="session-timeout__cancel" (click)="session.continueSession()">Cancel</button>
+        </div>
+      }
+    </section>
+  </div>
+}

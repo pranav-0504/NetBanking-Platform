@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthService } from '../../../../core/services/auth.service';
+import { SessionService } from '../../../../core/services/session.service';
 
 const ACCESS_TOKEN_KEY = 'nexbank_access_token';
 const REFRESH_TOKEN_KEY = 'nexbank_refresh_token';
@@ -27,6 +28,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private sessionService: SessionService,
     private router: Router,
     private snackBar: MatSnackBar
   ) {
@@ -69,6 +71,7 @@ export class LoginComponent {
 
         this.persistAuthValue(ACCESS_TOKEN_KEY, accessToken, rememberMe);
         this.persistAuthValue(REFRESH_TOKEN_KEY, this.getRefreshToken(response) || '', rememberMe);
+        this.sessionService.startSession();
 
         if (response?.data?.user) {
           this.persistAuthValue(USER_KEY, JSON.stringify(response.data.user), rememberMe);

@@ -4,6 +4,7 @@ import Account from '../models/account.model.js';
 import User from '../models/user.model.js';
 
 const MAX_ACCOUNT_GENERATION_ATTEMPTS = 20;
+const SESSION_DURATION_MS = 20 * 60 * 1000;
 
 const createAccessToken = (user) =>
   jwt.sign(
@@ -14,7 +15,7 @@ const createAccessToken = (user) =>
     },
     process.env.JWT_ACCESS_SECRET,
     {
-      expiresIn: process.env.JWT_ACCESS_EXPIRY || '15m',
+      expiresIn: process.env.JWT_ACCESS_EXPIRY || '20m',
     },
   );
 
@@ -136,6 +137,7 @@ export const loginUser = async ({ email, password }) => {
   const refreshToken = createRefreshToken(user);
 
   user.refreshToken = refreshToken;
+  user.sessionExpiresAt = new Date(Date.now() + SESSION_DURATION_MS);
   await user.save();
 
   const account = await Account.findOne({
@@ -177,13 +179,23 @@ export const refreshUserSession = async (refreshToken) => {
     refreshToken,
   });
 
-  if (!user) {
-    const error = new Error('Refresh token is invalid or expired.');
+  if (!user || !user.sessionExpiresAt || user.sessionExpiresAt.getTime() <= Date.now()) {
+    if (user) {
+      user.refreshToken = null;
+      user.sessionExpiresAt = null;
+      await user.save();
+    }
+
+    const error = new Error('Your session has expired. Please sign in again.');
     error.statusCode = 401;
     throw error;
   }
 
   const accessToken = createAccessToken(user);
+  const nextRefreshToken = createRefreshToken(user);
+  user.refreshToken = nextRefreshToken;
+  user.sessionExpiresAt = new Date(Date.now() + SESSION_DURATION_MS);
+  await user.save();
 
   const account = await Account.findOne({
     userId: user._id,
@@ -195,7 +207,7 @@ export const refreshUserSession = async (refreshToken) => {
     user: toPublicUser(user),
     account,
     accessToken,
-    refreshToken,
+    refreshToken: nextRefreshToken,
   };
 };
 
@@ -204,5 +216,8 @@ export const logoutUser = async (refreshToken) => {
     return;
   }
 
-  await User.updateOne({ refreshToken }, { $set: { refreshToken: null } });
+  await User.updateOne(
+    { refreshToken },
+    { $set: { refreshToken: null, sessionExpiresAt: null } },
+  );
 };

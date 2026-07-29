@@ -57,6 +57,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+
+    sessionExpiresAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

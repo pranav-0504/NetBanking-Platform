@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { AccountService } from '../../core/services/account.service';
 import { AuthService } from '../../core/services/auth.service';
+import { SessionService } from '../../core/services/session.service';
 
 const ACCESS_TOKEN_KEY = 'nexbank_access_token';
 const REFRESH_TOKEN_KEY = 'nexbank_refresh_token';
@@ -50,7 +51,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private accountService: AccountService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sessionService: SessionService
   ) {}
 
   ngOnInit() {
@@ -124,15 +126,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   logout() {
     this.clearRefreshTimers();
     const refreshToken = sessionStorage.getItem(REFRESH_TOKEN_KEY) || localStorage.getItem(REFRESH_TOKEN_KEY);
-
-    sessionStorage.removeItem(ACCESS_TOKEN_KEY);
-    sessionStorage.removeItem(REFRESH_TOKEN_KEY);
-    sessionStorage.removeItem(USER_KEY);
-    sessionStorage.removeItem(ACCOUNT_KEY);
-    localStorage.removeItem(ACCESS_TOKEN_KEY);
-    localStorage.removeItem(REFRESH_TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-    localStorage.removeItem(ACCOUNT_KEY);
+    this.sessionService.endSession(false);
     this.revokeRefreshToken(refreshToken);
     this.router.navigateByUrl('/auth/login');
   }
