@@ -76,7 +76,8 @@
 
       <mat-card-content>
         <div class="dashboard__account-number">
-          {{ account?.accountNumber || '--------' }}
+          <span>Account Number:</span>
+          <strong>{{ account?.accountNumber || '--------' }}</strong>
         </div>
         <div class="dashboard__row">
           <span>IFSC code</span>

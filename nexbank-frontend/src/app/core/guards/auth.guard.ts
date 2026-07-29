@@ -14,10 +14,24 @@ export const authGuard: CanActivateFn = () => {
   const router = inject(Router);
   const authService = inject(AuthService);
   const sessionService = inject(SessionService);
+  const refreshToken = getStoredValue(REFRESH_TOKEN_KEY);
 
   if (!sessionService.isSessionActive()) {
-    sessionService.endSession(false);
-    return router.createUrlTree(['/auth/login']);
+    if (!refreshToken) {
+      sessionService.endSession(false);
+      return router.createUrlTree(['/auth/login']);
+    }
+
+    return authService.refreshSession(refreshToken).pipe(
+      map((response) => {
+        sessionService.persistRefreshedSession(response);
+        return true;
+      }),
+      catchError(() => {
+        sessionService.endSession(false);
+        return of(router.createUrlTree(['/auth/login']));
+      }),
+    );
   }
   const token = getStoredValue(ACCESS_TOKEN_KEY);
 
@@ -25,8 +39,6 @@ export const authGuard: CanActivateFn = () => {
     syncRememberedSession();
     return true;
   }
-
-  const refreshToken = getStoredValue(REFRESH_TOKEN_KEY);
 
   if (!refreshToken) {
     sessionService.endSession(false);

@@ -26,7 +26,15 @@ export class SessionService {
   readonly isLoggingOut = signal(false);
 
   constructor() {
-    this.scheduleExpiry();
+    const storedExpiry = Number(this.getStoredValue(SESSION_EXPIRY_KEY));
+    const hasRefreshToken = !!this.getStoredValue(REFRESH_TOKEN_KEY);
+
+    if (hasRefreshToken && (!Number.isFinite(storedExpiry) || storedExpiry <= Date.now())) {
+      this.renewSession();
+    } else {
+      this.scheduleExpiry();
+    }
+
     ['click', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
       document.addEventListener(eventName, () => this.onActivity(), { passive: true });
     });

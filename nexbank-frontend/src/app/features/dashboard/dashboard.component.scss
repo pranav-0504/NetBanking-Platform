@@ -203,16 +203,29 @@
 }
 
 .dashboard__account-number {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
   padding: 14px 16px;
   margin-bottom: 10px;
   border: 1px solid rgba(0, 229, 196, 0.22);
   border-radius: $nb-radius-sm;
   background: rgba(0, 229, 196, 0.08);
   color: $nb-teal-300;
-  font-family: $nb-font-heading;
-  font-size: 1.45rem;
-  font-weight: 900;
-  letter-spacing: 0;
+
+  span {
+    color: $nb-text-secondary;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  strong {
+    color: $nb-teal-300;
+    font-family: $nb-font-heading;
+    font-size: 1.45rem;
+    font-weight: 900;
+    letter-spacing: 0;
+  }
 }
 
 .dashboard__row {

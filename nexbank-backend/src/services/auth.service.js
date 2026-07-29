@@ -179,7 +179,7 @@ export const refreshUserSession = async (refreshToken) => {
     refreshToken,
   });
 
-  if (!user || !user.sessionExpiresAt || user.sessionExpiresAt.getTime() <= Date.now()) {
+  if (!user || (user.sessionExpiresAt && user.sessionExpiresAt.getTime() <= Date.now())) {
     if (user) {
       user.refreshToken = null;
       user.sessionExpiresAt = null;
