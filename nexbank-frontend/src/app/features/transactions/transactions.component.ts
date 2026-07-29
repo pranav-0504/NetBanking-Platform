@@ -16,10 +16,16 @@ interface TransactionView {
   toUserId?: string;
   transferMode?: string;
   status: string;
+  description?: string;
   createdAt?: string;
 }
 
+interface TransactionRow extends TransactionView {
+  balance?: number;
+}
+
 const USER_KEY = 'nexbank_user';
+const ACCOUNT_KEY = 'nexbank_account';
 const REFRESH_LOADER_MS = 2000;
 
 @Component({
@@ -31,7 +37,7 @@ const REFRESH_LOADER_MS = 2000;
 export class TransactionsComponent implements OnDestroy {
   private transactionService = inject(TransactionService);
 
-  transactions: TransactionView[] = [];
+  transactions: TransactionRow[] = [];
   transactionsLoading = false;
   private refreshDelayTimer?: number;
   private currentUserId = this.getCurrentUserId();
@@ -51,7 +57,7 @@ export class TransactionsComponent implements OnDestroy {
       this.transactionService.getTransactions().subscribe({
         next: (response) => {
           this.transactionsLoading = false;
-          this.transactions = response?.data || [];
+          this.transactions = this.withRunningBalances(response?.data || []);
         },
         error: (error) => {
           this.transactionsLoading = false;
@@ -67,12 +73,14 @@ export class TransactionsComponent implements OnDestroy {
     }
   }
 
-  getTransactionTitle(transaction: TransactionView) {
+  getTransactionDetails(transaction: TransactionView) {
     if (transaction.transferMode === 'NEFT' && transaction.status === 'pending') {
       return this.isCredit(transaction) ? 'NEFT credit pending' : 'NEFT debit scheduled';
     }
 
-    return this.isCredit(transaction) ? 'Account credited' : 'Account debited';
+    const counterparty = this.getTransactionAccount(transaction);
+    const direction = this.isCredit(transaction) ? 'From' : 'To';
+    return transaction.description || `${direction} ${counterparty || 'account'}`;
   }
 
   getTransactionAccount(transaction: TransactionView) {
@@ -89,12 +97,43 @@ export class TransactionsComponent implements OnDestroy {
     return transaction.createdAt ? new Date(transaction.createdAt).toLocaleString() : '-';
   }
 
-  getTransactionAmount(transaction: TransactionView) {
-    if (transaction.transferMode === 'NEFT' && transaction.status === 'pending') {
-      return `Pending INR ${transaction.amount}`;
-    }
+  getTransactionType(transaction: TransactionView) {
+    return this.isCredit(transaction) ? 'Credit' : 'Debit';
+  }
 
-    return `${this.isCredit(transaction) ? '+' : '-'} INR ${transaction.amount}`;
+  getCreditAmount(transaction: TransactionView) {
+    return this.isCredit(transaction) && transaction.status === 'completed' ? transaction.amount : null;
+  }
+
+  getDebitAmount(transaction: TransactionView) {
+    return !this.isCredit(transaction) && transaction.status === 'completed' ? transaction.amount : null;
+  }
+
+  getBalance(transaction: TransactionRow) {
+    return transaction.status === 'completed' && transaction.balance !== undefined ? transaction.balance : null;
+  }
+
+  private withRunningBalances(transactions: TransactionView[]): TransactionRow[] {
+    let balance = this.getStoredAccountBalance();
+
+    return transactions.map((transaction) => {
+      const row: TransactionRow = { ...transaction, balance };
+
+      if (balance !== undefined && transaction.status === 'completed') {
+        balance += this.isCredit(transaction) ? -transaction.amount : transaction.amount;
+      }
+
+      return row;
+    });
+  }
+
+  private getStoredAccountBalance() {
+    try {
+      const account = JSON.parse(sessionStorage.getItem(ACCOUNT_KEY) || '{}');
+      return typeof account?.balance === 'number' ? account.balance : undefined;
+    } catch {
+      return undefined;
+    }
   }
 
   private getCurrentUserId() {

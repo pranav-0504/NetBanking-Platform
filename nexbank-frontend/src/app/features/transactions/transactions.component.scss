@@ -101,27 +101,73 @@
   }
 }
 
-.transaction-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 16px 0;
-  border-bottom: 1px solid $nb-border;
+.transactions-table-wrap {
+  overflow-x: auto;
+}
 
-  span {
-    display: block;
-    margin-top: 4px;
+.transactions-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 16px;
+    border-bottom: 1px solid $nb-border;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th {
+    color: $nb-teal-400;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  td {
     color: $nb-text-secondary;
+
+    strong,
+    span {
+      display: block;
+    }
+
+    strong {
+      color: $nb-text-primary;
+    }
+
+    span {
+      margin-top: 5px;
+      font-size: 0.82rem;
+      text-transform: capitalize;
+    }
   }
 
-  b {
-    color: $nb-error;
+  tr:last-child td {
+    border-bottom: 0;
   }
 
-  &.credit b {
-    color: $nb-success;
+  tr.pending td {
+    opacity: 0.68;
   }
+}
+
+.amount-column,
+.amount {
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+.credit-amount {
+  color: $nb-success !important;
+  font-weight: 800;
+}
+
+.debit-amount {
+  color: $nb-error !important;
+  font-weight: 800;
 }
 
 @media (max-width: 640px) {
@@ -134,8 +180,4 @@
     width: 100%;
   }
 
-  .transaction-row {
-    align-items: flex-start;
-    flex-direction: column;
-  }
 }

@@ -38,23 +38,36 @@
         </div>
       }
 
-      @if (!transactionsLoading) {
-        @for (transaction of transactions; track transaction._id) {
-          <div class="transaction-row" [class.credit]="isCredit(transaction)">
-            <div>
-              <strong>{{ getTransactionTitle(transaction) }}</strong>
-              <span>
-                {{ transaction.transferMode || 'TRANSFER' }}
-                |
-                {{ isCredit(transaction) ? 'From' : 'To' }}
-                {{ getTransactionAccount(transaction) || '-' }}
-                | {{ transaction.status }}
-                | {{ getTransactionDate(transaction) }}
-              </span>
-            </div>
-            <b>{{ getTransactionAmount(transaction) }}</b>
-          </div>
-        }
+      @if (!transactionsLoading && transactions.length > 0) {
+        <div class="transactions-table-wrap">
+          <table class="transactions-table">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Transaction Details</th>
+                <th scope="col">Transaction Type</th>
+                <th scope="col" class="amount-column">Credit</th>
+                <th scope="col" class="amount-column">Debit</th>
+                <th scope="col" class="amount-column">Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (transaction of transactions; track transaction._id) {
+                <tr [class.credit]="isCredit(transaction)" [class.pending]="transaction.status !== 'completed'">
+                  <td data-label="Date">{{ getTransactionDate(transaction) }}</td>
+                  <td data-label="Transaction Details">
+                    <strong>{{ getTransactionDetails(transaction) }}</strong>
+                    <span>{{ transaction.transferMode || 'TRANSFER' }} · {{ transaction.status }}</span>
+                  </td>
+                  <td data-label="Transaction Type">{{ getTransactionType(transaction) }}</td>
+                  <td data-label="Credit" class="amount credit-amount">{{ getCreditAmount(transaction) | currency:'INR':'symbol':'1.2-2' }}</td>
+                  <td data-label="Debit" class="amount debit-amount">{{ getDebitAmount(transaction) | currency:'INR':'symbol':'1.2-2' }}</td>
+                  <td data-label="Balance" class="amount">{{ getBalance(transaction) | currency:'INR':'symbol':'1.2-2' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       }
     </mat-card-content>
   </mat-card>
