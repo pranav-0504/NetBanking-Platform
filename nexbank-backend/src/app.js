@@ -9,7 +9,6 @@ import { getStoreType } from './config/redis.js';
 import accountRoutes from './routes/account.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import beneficiaryRoutes from './routes/beneficiary.routes.js';
-import notificationRoutes from './routes/notification.routes.js';
 import transactionRoutes from './routes/transaction.routes.js';
 
 const app = express();
@@ -51,7 +50,6 @@ app.get('/health', (_req, res) => {
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/accounts', accountRoutes);
 app.use('/api/v1/beneficiaries', beneficiaryRoutes);
-app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/transactions', transactionRoutes);
 
 /**

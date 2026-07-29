@@ -1,6 +1,5 @@
 import Account from '../models/account.model.js';
 import Beneficiary from '../models/beneficiary.model.js';
-import Notification from '../models/notification.model.js';
 import Transaction from '../models/transaction.model.js';
 
 const generateTxnId = () => `NXTXN${Date.now()}${Math.floor(1000 + Math.random() * 9000)}`;
@@ -23,12 +22,6 @@ const completeImpsTransaction = async (transactionId) => {
   transaction.completedAt = new Date();
   await transaction.save();
 
-  await Notification.create({
-    userId: transaction.toUserId,
-    title: 'NEFT transaction received',
-    message: `NEFT transfer of INR ${transaction.amount} has been credited to your account.`,
-    type: 'credit',
-  });
 };
 
 const completeNeftTransaction = async (transactionId) => {
