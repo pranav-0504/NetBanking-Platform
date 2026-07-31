@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,7 +18,7 @@ interface BeneficiaryView {
 
 @Component({
   selector: 'app-beneficiaries',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, MatButtonModule, MatCardModule, MatIconModule, MatSnackBarModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink, MatButtonModule, MatCardModule, MatIconModule, MatSnackBarModule],
   templateUrl: './beneficiaries.component.html',
   styleUrl: './beneficiaries.component.scss',
 })
@@ -29,6 +29,8 @@ export class BeneficiariesComponent {
 
   beneficiaries: BeneficiaryView[] = [];
   loading = false;
+  listLoading = true;
+  searchTerm = '';
 
   beneficiaryForm = this.fb.group({
     nickName: ['', Validators.required],
@@ -80,11 +82,38 @@ export class BeneficiariesComponent {
     this.beneficiaryService.getBeneficiaries().subscribe({
       next: (response) => {
         this.beneficiaries = response?.data || [];
+        this.listLoading = false;
       },
       error: (error) => {
+        this.listLoading = false;
         this.showMessage(error?.error?.message || 'Unable to load beneficiaries');
       },
     });
+  }
+
+  get filteredBeneficiaries() {
+    const query = this.searchTerm.trim().toLowerCase();
+    if (!query) {
+      return this.beneficiaries;
+    }
+
+    return this.beneficiaries.filter((beneficiary) =>
+      [beneficiary.nickName, beneficiary.accountHolderName, beneficiary.accountNumber, beneficiary.ifscCode]
+        .filter(Boolean)
+        .some((value) => value!.toLowerCase().includes(query)),
+    );
+  }
+
+  beneficiaryInitial(beneficiary: BeneficiaryView) {
+    return (beneficiary.nickName || 'B').trim().charAt(0).toUpperCase();
+  }
+
+  maskedAccountNumber(accountNumber: string) {
+    return `•••• ${accountNumber.slice(-4)}`;
+  }
+
+  trackBeneficiary(_: number, beneficiary: BeneficiaryView) {
+    return beneficiary._id || beneficiary.accountNumber;
   }
 
   private showMessage(message: string) {

@@ -1,8 +1,9 @@
 <main class="bank-page">
   <header class="bank-page__header">
     <div>
-      <p>Payees</p>
+      <p><mat-icon>diversity_3</mat-icon> Payment contacts</p>
       <h1>Beneficiaries</h1>
+      <span>Manage the people and accounts you trust with payments.</span>
     </div>
     <a mat-stroked-button routerLink="/dashboard">
       <mat-icon>arrow_back</mat-icon>
@@ -10,67 +11,93 @@
     </a>
   </header>
 
+  <section class="beneficiary-overview" aria-label="Beneficiary overview">
+    <div class="overview-icon"><mat-icon>verified_user</mat-icon></div>
+    <div>
+      <strong>{{ beneficiaries.length }} saved {{ beneficiaries.length === 1 ? 'beneficiary' : 'beneficiaries' }}</strong>
+      <span>Verified details are ready when you make a transfer.</span>
+    </div>
+    <a mat-flat-button color="primary" routerLink="/fund-transfer">
+      <mat-icon>send</mat-icon> New transfer
+    </a>
+  </section>
+
   <section class="beneficiary-layout">
-    <mat-card>
-      <mat-card-header>
-        <mat-icon mat-card-avatar>group_add</mat-icon>
-        <mat-card-title>Add Beneficiary</mat-card-title>
-        <mat-card-subtitle>Save trusted accounts for faster transfers</mat-card-subtitle>
-      </mat-card-header>
+    <mat-card class="add-card">
+      <div class="card-heading">
+        <div class="card-icon"><mat-icon>person_add</mat-icon></div>
+        <div>
+          <span class="eyebrow">New payment contact</span>
+          <h2>Add beneficiary</h2>
+          <p>Save an account once and pay it securely anytime.</p>
+        </div>
+      </div>
 
       <mat-card-content>
         <form [formGroup]="beneficiaryForm" class="beneficiary-form">
           <label>
-            Nickname
-            <input type="text" formControlName="nickName" placeholder="Pranav Savings">
+            <span>Nickname</span>
+            <input type="text" formControlName="nickName" placeholder="e.g. Pranav Savings" autocomplete="off">
+            @if (beneficiaryForm.controls.nickName.touched && beneficiaryForm.controls.nickName.invalid) { <small>Enter a name to identify this payee.</small> }
           </label>
 
           <label>
-            Account number
-            <input type="text" maxlength="8" formControlName="accountNumber" placeholder="12345678">
+            <span>Account number</span>
+            <input type="text" inputmode="numeric" maxlength="8" formControlName="accountNumber" placeholder="Enter 8-digit account number">
+            @if (beneficiaryForm.controls.accountNumber.touched && beneficiaryForm.controls.accountNumber.invalid) { <small>Enter an 8-digit account number.</small> }
           </label>
 
           <label>
-            IFSC code
-            <input type="text" maxlength="9" formControlName="ifscCode" placeholder="NEX001234">
+            <span>IFSC code</span>
+            <input class="uppercase" type="text" maxlength="9" formControlName="ifscCode" placeholder="Enter the IFSC Code">
+            @if (beneficiaryForm.controls.ifscCode.touched && beneficiaryForm.controls.ifscCode.invalid) { <small>Use the format NEX001234.</small> }
           </label>
 
           <button mat-flat-button color="primary" type="button" (click)="addPreviewBeneficiary()" [disabled]="loading">
-            <mat-icon>add</mat-icon>
+            <mat-icon>{{ loading ? 'progress_activity' : 'add_circle' }}</mat-icon>
             {{ loading ? 'Adding...' : 'Add Beneficiary' }}
           </button>
         </form>
+        <div class="security-note"><mat-icon>lock</mat-icon> Your beneficiary details are protected with bank-grade security.</div>
       </mat-card-content>
     </mat-card>
 
-    <mat-card>
-      <mat-card-header>
-        <mat-icon mat-card-avatar>contacts</mat-icon>
-        <mat-card-title>Saved Beneficiaries</mat-card-title>
-        <mat-card-subtitle>Add or remove transfer payees</mat-card-subtitle>
-      </mat-card-header>
+    <mat-card class="saved-card">
+      <div class="saved-card__header">
+        <div>
+          <span class="eyebrow">Your trusted list</span>
+          <h2>Saved beneficiaries</h2>
+        </div>
+        <label class="search-field">
+          <mat-icon>search</mat-icon>
+          <input [(ngModel)]="searchTerm" [ngModelOptions]="{standalone: true}" type="search" placeholder="Search saved contacts" aria-label="Search beneficiaries">
+        </label>
+      </div>
 
       <mat-card-content>
-        @if (beneficiaries.length === 0) {
-          <p class="empty">No beneficiaries added yet.</p>
+        @if (listLoading) {
+          <div class="loading-state"><span></span><span></span><span></span></div>
+        } @else if (beneficiaries.length === 0) {
+          <div class="empty-state"><mat-icon>group_add</mat-icon><h3>No saved beneficiaries yet</h3><p>Add a trusted account to make your next transfer quicker.</p></div>
+        } @else if (filteredBeneficiaries.length === 0) {
+          <div class="empty-state empty-state--compact"><mat-icon>manage_search</mat-icon><h3>No matching contacts</h3><p>Try a name, account number, or IFSC code.</p></div>
         }
 
-        @for (beneficiary of beneficiaries; track beneficiary.accountNumber; let index = $index) {
-          <div class="beneficiary-item">
-            <div>
-              <strong>{{ beneficiary.nickName }}</strong>
-              <span>{{ beneficiary.accountHolderName || 'Verified payee' }} | {{ beneficiary.accountNumber }} | {{ beneficiary.ifscCode }}</span>
+        @for (beneficiary of filteredBeneficiaries; track trackBeneficiary($index, beneficiary); let index = $index) {
+          <article class="beneficiary-item">
+            <div class="beneficiary-avatar">{{ beneficiaryInitial(beneficiary) }}</div>
+            <div class="beneficiary-details">
+              <div class="beneficiary-name"><strong>{{ beneficiary.nickName }}</strong><span><mat-icon>verified</mat-icon> Verified</span></div>
+              <p>{{ beneficiary.accountHolderName || 'Trusted payment contact' }}</p>
+              <div class="beneficiary-meta"><span>{{ maskedAccountNumber(beneficiary.accountNumber) }}</span><i></i><span>{{ beneficiary.ifscCode }}</span></div>
             </div>
             <div class="beneficiary-actions">
-              <a class="send-money-action" [routerLink]="['/fund-transfer']" [queryParams]="{ beneficiaryId: beneficiary._id }" aria-label="Send money through IMPS or NEFT">
-                <mat-icon>send</mat-icon>
-                <span>Send Money through IMPS/NEFT</span>
-              </a>
-              <button mat-icon-button type="button" (click)="removeBeneficiary(index)" aria-label="Remove beneficiary">
+              <a mat-stroked-button class="send-money-action" [routerLink]="['/fund-transfer']" [queryParams]="{ beneficiaryId: beneficiary._id }"><mat-icon>send</mat-icon><span>Pay</span></a>
+              <button mat-icon-button class="remove-button" type="button" (click)="removeBeneficiary(beneficiaries.indexOf(beneficiary))" [attr.aria-label]="'Remove ' + beneficiary.nickName">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
-          </div>
+          </article>
         }
       </mat-card-content>
     </mat-card>
