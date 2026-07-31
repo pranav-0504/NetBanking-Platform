@@ -1,0 +1,32 @@
+<main class="statement-page">
+  <header class="statement-page__header">
+    <div><p><mat-icon>description</mat-icon> Banking documents</p><h1>Download statement</h1><span>Choose a period and receive a secure PDF copy of your account activity.</span></div>
+    <a mat-stroked-button routerLink="/dashboard"><mat-icon>arrow_back</mat-icon> Dashboard</a>
+  </header>
+
+  <section class="statement-hero"><div class="statement-hero__icon"><mat-icon>picture_as_pdf</mat-icon></div><div><strong>Account statement in PDF</strong><span>Clear, shareable and ready to save for your records.</span></div><mat-icon class="statement-hero__secure">verified_user</mat-icon></section>
+
+  <section class="statement-layout">
+    <section class="statement-panel">
+      <div class="section-title"><span class="eyebrow">Step 1</span><h2>Select statement period</h2><p>Your selection is securely sent with the download request.</p></div>
+      <div class="period-grid">
+        @for (period of periods; track period.value) {
+          <button type="button" class="period-card" [class.period-card--selected]="selectedRange === period.value" (click)="selectRange(period.value)" [attr.aria-pressed]="selectedRange === period.value">
+            <mat-icon>{{ period.icon }}</mat-icon><div><strong>{{ period.title }}</strong><span>{{ period.description }}</span></div><i><mat-icon>check</mat-icon></i>
+          </button>
+        }
+      </div>
+
+      @if (selectedRange === 'custom') {
+        <form [formGroup]="statementForm" class="custom-dates">
+          <div><label for="startDate">Start date</label><input id="startDate" type="date" formControlName="startDate" [max]="statementForm.controls.endDate.value || null"><small>Choose the first day to include.</small></div>
+          <div><label for="endDate">End date</label><input id="endDate" type="date" formControlName="endDate" [max]="today"><small>Choose the last day to include.</small></div>
+        </form>
+      }
+
+      <button mat-flat-button color="primary" class="download-button" type="button" (click)="download()" [disabled]="downloading"><mat-icon>{{ downloading ? 'progress_activity' : 'download' }}</mat-icon>{{ downloading ? 'Preparing your PDF...' : 'Download PDF statement' }}</button>
+    </section>
+
+    <aside class="statement-info"><div class="statement-info__badge"><mat-icon>lock</mat-icon></div><span class="eyebrow">Private and secure</span><h2>Built for your records</h2><p>Your statement includes transaction dates, reference numbers, payment descriptions, debit and credit amounts.</p><div><mat-icon>verified</mat-icon><span>Only you can request your statement.</span></div><div><mat-icon>description</mat-icon><span>Generated in portable PDF format.</span></div><div><mat-icon>history</mat-icon><span>Includes transactions from your chosen period.</span></div></aside>
+  </section>
+</main>

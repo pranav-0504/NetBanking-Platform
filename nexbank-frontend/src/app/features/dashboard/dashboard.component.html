@@ -29,7 +29,12 @@
   <section class="dashboard__hero">
     <div>
       <p class="dashboard__eyebrow">Available balance</p>
-      <h2>{{ formattedBalance }}</h2>
+      <div class="dashboard__balance-row">
+        <h2>{{ balanceVisible ? formattedBalance : '••••••' }}</h2>
+        <button mat-icon-button type="button" class="dashboard__balance-toggle" (click)="toggleBalanceVisibility()" [attr.aria-label]="balanceVisible ? 'Hide available balance' : 'Show available balance'" [attr.aria-pressed]="balanceVisible">
+          <mat-icon>{{ balanceVisible ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+      </div>
       <p>Updated {{ lastUpdated | date:'shortTime' }}</p>
     </div>
 
@@ -117,6 +122,14 @@
       <div>
         <strong>Transactions</strong>
         <span>Credits, debits and transfer history</span>
+      </div>
+    </a>
+
+    <a class="dashboard__action" routerLink="/download-statement">
+      <mat-icon>picture_as_pdf</mat-icon>
+      <div>
+        <strong>Download Statement</strong>
+        <span>Choose a period and get your PDF statement</span>
       </div>
     </a>
   </section>

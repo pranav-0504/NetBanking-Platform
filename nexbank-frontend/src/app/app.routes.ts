@@ -42,6 +42,12 @@ export const routes: Routes = [
       import('./features/transactions/transactions.component').then((m) => m.TransactionsComponent),
   },
   {
+    path: 'download-statement',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/download-statement/download-statement.component').then((m) => m.DownloadStatementComponent),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

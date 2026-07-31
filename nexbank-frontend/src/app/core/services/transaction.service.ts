@@ -17,4 +17,8 @@ export class TransactionService {
   transferFunds(data: any): Observable<any> {
     return this.http.post(`${this.api}/transfer`, data);
   }
+
+  downloadStatement(data: { range: string; startDate?: string; endDate?: string }): Observable<Blob> {
+    return this.http.post(`${this.api}/statement`, data, { responseType: 'blob' });
+  }
 }
