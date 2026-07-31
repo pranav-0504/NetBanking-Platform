@@ -29,12 +29,7 @@
   <section class="dashboard__hero">
     <div>
       <p class="dashboard__eyebrow">Available balance</p>
-      <div class="dashboard__balance-row">
-        <h2>{{ balanceVisible ? formattedBalance : '••••••' }}</h2>
-        <button mat-icon-button type="button" class="dashboard__balance-toggle" (click)="toggleBalanceVisibility()" [attr.aria-label]="balanceVisible ? 'Hide available balance' : 'Show available balance'" [attr.aria-pressed]="balanceVisible">
-          <mat-icon>{{ balanceVisible ? 'visibility' : 'visibility_off' }}</mat-icon>
-        </button>
-      </div>
+      <h2>{{ formattedBalance }}</h2>
       <p>Updated {{ lastUpdated | date:'shortTime' }}</p>
     </div>
 

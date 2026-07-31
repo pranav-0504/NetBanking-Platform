@@ -47,7 +47,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   lastUpdated = new Date();
   accountRefreshing = false;
   loggingOut = false;
-  balanceVisible = true;
   private autoRefreshTimer?: number;
   private refreshDelayTimer?: number;
 
@@ -120,10 +119,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       currency: this.account?.currency || 'INR',
       maximumFractionDigits: 2,
     }).format(this.account?.balance || 0);
-  }
-
-  toggleBalanceVisibility() {
-    this.balanceVisible = !this.balanceVisible;
   }
 
   get accountType() {
