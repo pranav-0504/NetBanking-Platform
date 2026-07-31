@@ -39,8 +39,10 @@ export class FundTransferComponent implements OnDestroy {
   redirectSeconds = 10;
   transferCompleted = false;
   openedFromBeneficiary = false;
+  entryLoading = false;
   private processingTimer?: number;
   private redirectTimer?: number;
+  private entryTimer?: number;
 
   transferForm = this.fb.group({
     beneficiaryId: [''],
@@ -53,6 +55,12 @@ export class FundTransferComponent implements OnDestroy {
 
   ngOnInit() {
     this.openedFromBeneficiary = !!this.route.snapshot.queryParamMap.get('beneficiaryId');
+    this.entryLoading = this.openedFromBeneficiary;
+    if (this.entryLoading) {
+      this.entryTimer = window.setTimeout(() => {
+        this.entryLoading = false;
+      }, 1000);
+    }
     this.loadBeneficiaries();
   }
 
@@ -63,6 +71,10 @@ export class FundTransferComponent implements OnDestroy {
 
     if (this.redirectTimer) {
       window.clearInterval(this.redirectTimer);
+    }
+
+    if (this.entryTimer) {
+      window.clearTimeout(this.entryTimer);
     }
   }
 

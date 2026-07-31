@@ -131,4 +131,15 @@
       </section>
     </div>
   }
+
+  @if (entryLoading) {
+    <div class="entry-loader-backdrop" role="status" aria-live="polite" aria-label="Preparing transfer">
+      <section class="entry-loader">
+        <div class="entry-loader__mark"><mat-icon>send</mat-icon></div>
+        <div class="entry-loader__spinner"></div>
+        <strong>Preparing your transfer</strong>
+        <span>Loading verified beneficiary details</span>
+      </section>
+    </div>
+  }
 </main>
