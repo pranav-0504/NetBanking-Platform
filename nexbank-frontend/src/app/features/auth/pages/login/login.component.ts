@@ -71,7 +71,6 @@ export class LoginComponent {
 
         this.persistAuthValue(ACCESS_TOKEN_KEY, accessToken, rememberMe);
         this.persistAuthValue(REFRESH_TOKEN_KEY, this.getRefreshToken(response) || '', rememberMe);
-        this.sessionService.startSession();
 
         if (response?.data?.user) {
           this.persistAuthValue(USER_KEY, JSON.stringify(response.data.user), rememberMe);
@@ -90,6 +89,8 @@ export class LoginComponent {
           localStorage.removeItem(USER_KEY);
           localStorage.removeItem(ACCOUNT_KEY);
         }
+
+        this.sessionService.startSession(rememberMe);
 
         this.loading.set(false);
         this.showMessage('Login successful');

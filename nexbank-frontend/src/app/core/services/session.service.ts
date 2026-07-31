@@ -8,6 +8,7 @@ const USER_KEY = 'nexbank_user';
 const ACCOUNT_KEY = 'nexbank_account';
 const SESSION_EXPIRY_KEY = 'nexbank_session_expires_at';
 const SESSION_DURATION_MS = 20 * 60 * 1000;
+const REMEMBERED_SESSION_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 const RENEWAL_THROTTLE_MS = 60 * 1000;
 const SESSION_WARNING_MS = 60 * 1000;
 const LOGOUT_DELAY_MS = 800;
@@ -40,8 +41,9 @@ export class SessionService {
     });
   }
 
-  startSession() {
-    this.setSessionExpiry(Date.now() + SESSION_DURATION_MS);
+  startSession(rememberMe = this.hasRememberedSession()) {
+    const duration = rememberMe ? REMEMBERED_SESSION_DURATION_MS : SESSION_DURATION_MS;
+    this.setSessionExpiry(Date.now() + duration, rememberMe);
   }
 
   continueSession() {
@@ -132,12 +134,16 @@ export class SessionService {
     });
   }
 
-  private setSessionExpiry(expiry: number) {
+  private setSessionExpiry(expiry: number, rememberMe = this.hasRememberedSession()) {
     sessionStorage.setItem(SESSION_EXPIRY_KEY, String(expiry));
-    if (localStorage.getItem(REFRESH_TOKEN_KEY)) {
+    if (rememberMe) {
       localStorage.setItem(SESSION_EXPIRY_KEY, String(expiry));
     }
     this.scheduleExpiry();
+  }
+
+  private hasRememberedSession() {
+    return !!localStorage.getItem(REFRESH_TOKEN_KEY);
   }
 
   private scheduleExpiry() {
