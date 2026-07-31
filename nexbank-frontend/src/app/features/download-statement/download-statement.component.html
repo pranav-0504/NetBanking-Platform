@@ -29,4 +29,27 @@
 
     <aside class="statement-info"><div class="statement-info__badge"><mat-icon>lock</mat-icon></div><span class="eyebrow">Private and secure</span><h2>Built for your records</h2><p>Your statement includes transaction dates, reference numbers, payment descriptions, debit and credit amounts.</p><div><mat-icon>verified</mat-icon><span>Only you can request your statement.</span></div><div><mat-icon>description</mat-icon><span>Generated in portable PDF format.</span></div><div><mat-icon>history</mat-icon><span>Includes transactions from your chosen period.</span></div></aside>
   </section>
+
+  @if (downloading) {
+    <div class="statement-loader-backdrop" role="status" aria-live="polite" aria-label="Preparing account statement">
+      <section class="statement-loader">
+        <div class="statement-loader__icon"><mat-icon>picture_as_pdf</mat-icon></div>
+        <div class="statement-loader__spinner"></div>
+        <strong>Preparing your statement</strong>
+        <span>Please wait while we generate your secure PDF.</span>
+      </section>
+    </div>
+  }
+
+  @if (downloadSuccess) {
+    <div class="statement-success-backdrop" role="presentation">
+      <section class="statement-success-modal" role="dialog" aria-modal="true" aria-labelledby="statement-downloaded-title">
+        <div class="statement-success-modal__icon"><mat-icon>check</mat-icon></div>
+        <p>Download complete</p>
+        <h2 id="statement-downloaded-title">Account statement PDF downloaded successfully</h2>
+        <span>Your statement has been saved to your device's downloads folder.</span>
+        <button mat-flat-button color="primary" type="button" (click)="closeSuccessModal()">Done</button>
+      </section>
+    </div>
+  }
 </main>

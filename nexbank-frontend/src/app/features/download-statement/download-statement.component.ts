@@ -28,6 +28,7 @@ export class DownloadStatementComponent {
     { value: 'custom', title: 'Custom range', description: 'Select specific start and end dates', icon: 'tune' },
   ];
   downloading = false;
+  downloadSuccess = false;
   selectedRange: StatementRange = 'last_7_days';
   today = new Date().toISOString().slice(0, 10);
   statementForm = this.fb.group({ startDate: [''], endDate: [''] });
@@ -59,8 +60,8 @@ export class DownloadStatementComponent {
         link.href = url;
         link.download = `nexbank-statement-${new Date().toISOString().slice(0, 10)}.pdf`;
         link.click();
-        URL.revokeObjectURL(url);
-        this.showMessage('Your statement PDF is downloading.');
+        window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+        this.downloadSuccess = true;
       },
       error: async (error) => {
         this.downloading = false;
@@ -71,6 +72,10 @@ export class DownloadStatementComponent {
         this.showMessage(message);
       },
     });
+  }
+
+  closeSuccessModal() {
+    this.downloadSuccess = false;
   }
 
   private showMessage(message: string) {
