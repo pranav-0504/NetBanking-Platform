@@ -2,7 +2,7 @@
 
 .bank-page {
   min-height: 100vh;
-  padding: 28px;
+  padding: 32px 28px 48px;
   color: $nb-text-primary;
 }
 
@@ -20,6 +20,9 @@
   margin-bottom: 24px;
 
   p {
+    display: flex;
+    align-items: center;
+    gap: 6px;
     color: $nb-teal-400;
     font-size: 0.78rem;
     font-weight: 800;
@@ -30,12 +33,14 @@
     font-family: $nb-font-heading;
     font-size: 2rem;
   }
+
+  > div > span { display: block; margin-top: 7px; color: $nb-text-secondary; }
 }
 
 .transfer-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
-  gap: 18px;
+  gap: 20px;
 }
 
 .transfer-success {
@@ -77,19 +82,23 @@
 .transfer-card,
 .transfer-summary {
   border: 1px solid $nb-border;
-  border-radius: $nb-radius-sm;
+  border-radius: $nb-radius-md;
+  box-shadow: $nb-shadow-md;
 }
 
 .transfer-card {
+  background: linear-gradient(155deg, rgba(17,31,53,.98), rgba(10,22,40,.98));
   mat-card-content {
-    padding-top: 20px;
+    padding-top: 22px;
   }
 }
+.transfer-card__heading { display: flex; gap: 13px; padding: 22px 22px 0; .heading-icon { display: grid; place-items: center; flex: 0 0 auto; width: 42px; height: 42px; border-radius: $nb-radius-sm; color: $nb-teal-400; background: rgba(0,229,196,.12); } h2 { margin: 4px 0 5px; font-family: $nb-font-heading; font-size: 1.22rem; } p { color: $nb-text-secondary; font-size: .87rem; } }
+.eyebrow { color: $nb-teal-400; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 
 .transfer-form,
 .form-grid {
   display: grid;
-  gap: 18px;
+  gap: 19px;
 }
 
 .beneficiary-picker {
@@ -99,13 +108,15 @@
   align-items: end;
 
   label {
+    display: grid;
+    gap: 7px;
     color: $nb-text-secondary;
-    font-size: 0.9rem;
+    font-size: .83rem;
+    font-weight: 600;
   }
 
   select {
     width: 100%;
-    margin-top: 8px;
     padding: 13px 14px;
     border: 1px solid $nb-border;
     border-radius: $nb-radius-sm;
@@ -113,6 +124,8 @@
     color: $nb-text-primary;
   }
 }
+.beneficiary-picker select:focus, .form-grid input:focus { outline: 0; border-color: rgba(0,229,196,.7); box-shadow: 0 0 0 3px rgba(0,229,196,.1); }
+.transfer-section-label { display: flex; align-items: center; justify-content: space-between; padding-top: 3px; border-top: 1px solid $nb-border; padding-top: 18px; span { font-size: .84rem; font-weight: 700; } small { color: $nb-text-muted; font-size: .73rem; } }
 
 .mode-grid {
   display: grid;
@@ -120,7 +133,10 @@
   gap: 12px;
 
   label {
-    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
     border: 1px solid $nb-border;
     border-radius: $nb-radius-sm;
     background: rgba(255, 255, 255, 0.03);
@@ -131,10 +147,9 @@
     display: none;
   }
 
-  strong,
-  span {
-    display: block;
-  }
+  mat-icon { color: $nb-teal-400; }
+  div { display: grid; gap: 3px; flex: 1; }
+  strong, span { display: block; }
 
   span {
     color: $nb-text-secondary;
@@ -144,19 +159,23 @@
     border-color: rgba(0, 229, 196, 0.5);
     background: rgba(0, 229, 196, 0.09);
   }
+
+  b { padding: 4px 6px; border-radius: 5px; color: $nb-teal-300; background: rgba(0,229,196,.12); font-size: .62rem; }
 }
 
 .form-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 
   label {
+    display: grid;
+    gap: 7px;
     color: $nb-text-secondary;
-    font-size: 0.9rem;
+    font-size: .83rem;
+    font-weight: 600;
   }
 
   input {
     width: 100%;
-    margin-top: 8px;
     padding: 13px 14px;
     border: 1px solid $nb-border;
     border-radius: $nb-radius-sm;
@@ -170,12 +189,19 @@
     background: rgba(0, 229, 196, 0.08);
   }
 }
+.form-grid em { color: $nb-text-muted; font-size: .72rem; font-style: normal; font-weight: 500; }
+.amount-input { display: flex; align-items: center; overflow: hidden; border: 1px solid $nb-border; border-radius: $nb-radius-sm; background: $nb-navy-900; span { padding-left: 14px; color: $nb-teal-400; font-size: 1.1rem; } input { border: 0; &:focus { box-shadow: none; } } &:focus-within { border-color: rgba(0,229,196,.7); box-shadow: 0 0 0 3px rgba(0,229,196,.1); } }
+.transfer-form > button { min-height: 48px; margin-top: 2px; }
+.secure-footer { display: flex; align-items: center; gap: 8px; padding: 16px 0 2px; color: $nb-text-muted; font-size: .75rem; mat-icon { width: 17px; height: 17px; font-size: 17px; color: $nb-teal-400; } }
 
 .transfer-summary {
-  padding: 26px;
+  padding: 28px;
   background: linear-gradient(135deg, rgba(0, 229, 196, 0.1), rgba(26, 45, 74, 0.72));
 
-  mat-icon {
+  .summary-shield {
+    display: grid; place-items: center; width: 46px; height: 46px; margin-bottom: 22px; border-radius: 50%; background: rgba(0,229,196,.13);
+  }
+  .summary-shield mat-icon {
     width: 42px;
     height: 42px;
     font-size: 42px;
@@ -183,7 +209,7 @@
   }
 
   h2 {
-    margin: 16px 0 10px;
+    margin: 8px 0 10px;
     font-size: 1.25rem;
   }
 
@@ -192,6 +218,7 @@
     line-height: 1.6;
   }
 }
+.summary-rule { display: flex; gap: 10px; align-items: flex-start; margin-top: 17px; padding-top: 17px; border-top: 1px solid $nb-border; color: $nb-text-secondary; font-size: .82rem; line-height: 1.4; mat-icon { flex: 0 0 auto; width: 18px; height: 18px; font-size: 18px; color: $nb-teal-400; } }
 
 .transfer-modal-backdrop {
   position: fixed;
@@ -283,3 +310,5 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 560px) { .bank-page { padding: 22px 16px 38px; } .bank-page__header { align-items: flex-start; flex-direction: column; } .bank-page__header a { width: 100%; } .mode-grid { grid-template-columns: 1fr; } .transfer-section-label { align-items: flex-start; gap: 4px; flex-direction: column; } }

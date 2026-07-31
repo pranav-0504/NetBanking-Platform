@@ -38,6 +38,7 @@ export class FundTransferComponent implements OnDestroy {
   successMessage = '';
   redirectSeconds = 10;
   transferCompleted = false;
+  openedFromBeneficiary = false;
   private processingTimer?: number;
   private redirectTimer?: number;
 
@@ -51,6 +52,7 @@ export class FundTransferComponent implements OnDestroy {
   });
 
   ngOnInit() {
+    this.openedFromBeneficiary = !!this.route.snapshot.queryParamMap.get('beneficiaryId');
     this.loadBeneficiaries();
   }
 
