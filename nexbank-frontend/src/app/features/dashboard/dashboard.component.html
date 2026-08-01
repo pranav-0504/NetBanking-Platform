@@ -34,65 +34,15 @@
     </div>
 
     <div class="dashboard__account-chip">
-      <span>{{ account?.accountNumber || '--------' }}</span>
-      <small>{{ account?.ifscCode || 'NEX00----' }}</small>
+      <p class="dashboard__eyebrow">Banking details</p>
+      <small class="dashboard__account-label">Account number</small>
+      <strong>{{ account?.accountNumber || '--------' }}</strong>
+      <small class="dashboard__account-label">IFSC code</small>
+      <span>{{ account?.ifscCode || 'NEX00----' }}</span>
+      <!-- <div class="dashboard__account-chip-details">
+        <div><small>Account type</small><b>{{ accountType }}</b></div>
+      </div> -->
     </div>
-  </section>
-
-  <section class="dashboard__grid">
-    <mat-card class="dashboard__panel">
-      <mat-card-header>
-        <mat-icon mat-card-avatar>person</mat-icon>
-        <mat-card-title>Profile Details</mat-card-title>
-        <mat-card-subtitle>{{ fullName }}</mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content>
-        <div class="dashboard__row">
-          <span>Name</span>
-          <strong>{{ fullName }}</strong>
-        </div>
-        <div class="dashboard__row">
-          <span>Account type</span>
-          <strong>{{ accountType }}</strong>
-        </div>
-        <div class="dashboard__row">
-          <span>Email</span>
-          <strong>{{ user?.email || '-' }}</strong>
-        </div>
-        <div class="dashboard__row">
-          <span>Mobile</span>
-          <strong>{{ user?.mobile || '-' }}</strong>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card class="dashboard__panel dashboard__panel--account">
-      <mat-card-header>
-        <mat-icon mat-card-avatar>account_balance_wallet</mat-icon>
-        <mat-card-title>Banking Details</mat-card-title>
-        <mat-card-subtitle>Primary savings account</mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content>
-        <div class="dashboard__account-number">
-          <span>Account Number:</span>
-          <strong>{{ account?.accountNumber || '--------' }}</strong>
-        </div>
-        <div class="dashboard__row">
-          <span>IFSC code</span>
-          <strong>{{ account?.ifscCode || '-' }}</strong>
-        </div>
-        <div class="dashboard__row">
-          <span>Account type</span>
-          <strong>{{ accountType }}</strong>
-        </div>
-        <div class="dashboard__row">
-          <span>Balance</span>
-          <strong>{{ formattedBalance }}</strong>
-        </div>
-      </mat-card-content>
-    </mat-card>
   </section>
 
   <section class="dashboard__services">

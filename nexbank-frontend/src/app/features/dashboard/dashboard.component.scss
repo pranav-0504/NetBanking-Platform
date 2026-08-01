@@ -9,7 +9,6 @@
 
 .dashboard__header,
 .dashboard__hero,
-.dashboard__grid,
 .dashboard__actions {
   width: min(100%, $nb-max-content-width);
   margin: 0 auto;
@@ -25,8 +24,7 @@
 
 .dashboard__brand,
 .dashboard__nav,
-.dashboard__action,
-.dashboard__account-chip {
+.dashboard__action {
   display: flex;
   align-items: center;
 }
@@ -153,25 +151,54 @@
 
 
 .dashboard__account-chip {
-  min-width: 260px;
-  justify-content: center;
-  flex-direction: column;
-  gap: 6px;
-  padding: 22px;
+  min-width: 310px;
+  padding: 22px 24px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: $nb-radius-sm;
   background: rgba(5, 13, 24, 0.42);
+  text-align: center;
 
-  span {
+  > strong {
+    display: block;
     font-family: $nb-font-heading;
     font-size: 1.7rem;
     font-weight: 900;
   }
 
-  small {
+  > span {
+    display: block;
+    margin-top: 6px;
     color: $nb-text-secondary;
     font-size: 0.9rem;
   }
+}
+
+.dashboard__account-chip .dashboard__eyebrow { margin-bottom: 13px; }
+
+.dashboard__account-label {
+  display: block;
+  margin-bottom: 3px;
+  color: $nb-text-muted;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.dashboard__account-chip > strong + .dashboard__account-label { margin-top: 14px; }
+
+.dashboard__account-chip-details {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid $nb-border;
+  text-align: left;
+
+  div { min-width: 0; }
+  small, b { display: block; }
+  small { color: $nb-text-muted; font-size: .72rem; }
+  b { overflow: hidden; margin-top: 4px; color: $nb-text-primary; font-size: .85rem; text-overflow: ellipsis; white-space: nowrap; }
 }
 
 .dashboard__grid {

@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { AccountService } from '../../core/services/account.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -37,7 +36,7 @@ interface DashboardAccount {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterLink, MatButtonModule, MatCardModule, MatIconModule],
+  imports: [CommonModule, RouterLink, MatButtonModule, MatIconModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
