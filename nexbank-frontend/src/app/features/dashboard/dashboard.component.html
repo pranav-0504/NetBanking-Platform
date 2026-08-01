@@ -30,7 +30,7 @@
     <div>
       <p class="dashboard__eyebrow">Available balance</p>
       <h2>{{ formattedBalance }}</h2>
-      <p>Updated {{ lastUpdated | date:'shortTime' }}</p>
+      <p>Last Updated :  {{ lastUpdated | date:'shortTime' }}</p>
     </div>
 
     <div class="dashboard__account-chip">
@@ -95,46 +95,53 @@
     </mat-card>
   </section>
 
-  <section class="dashboard__actions">
-    <a class="dashboard__action" routerLink="/fund-transfer">
+  <section class="dashboard__services">
+    <div class="dashboard__services-heading">
+      <!-- <p class="dashboard__eyebrow">Banking tools</p> -->
+      <h2>Services</h2>
+    </div>
+
+    <div class="dashboard__actions">
+      <a class="dashboard__action" routerLink="/fund-transfer">
       <mat-icon>send</mat-icon>
       <div>
         <strong>Funds Transfer</strong>
         <span>IMPS instant, NEFT in 5 minutes</span>
       </div>
-    </a>
+      </a>
 
-    <a class="dashboard__action" routerLink="/beneficiaries">
+      <a class="dashboard__action" routerLink="/beneficiaries">
       <mat-icon>group_add</mat-icon>
       <div>
         <strong>Beneficiaries</strong>
         <span>Add and remove saved payees</span>
       </div>
-    </a>
+      </a>
 
-    <a class="dashboard__action" routerLink="/transactions">
+      <a class="dashboard__action" routerLink="/transactions">
       <mat-icon>sync_alt</mat-icon>
       <div>
         <strong>Transactions</strong>
         <span>Credits, debits and transfer history</span>
       </div>
-    </a>
+      </a>
 
-    <a class="dashboard__action" routerLink="/download-statement">
+      <a class="dashboard__action" routerLink="/download-statement">
       <mat-icon>picture_as_pdf</mat-icon>
       <div>
         <strong>Download Statement</strong>
         <span>Choose a period and get your PDF statement</span>
       </div>
-    </a>
+      </a>
 
-    <a class="dashboard__action" routerLink="/view-account-statement">
+      <a class="dashboard__action" routerLink="/view-account-statement">
       <mat-icon>table_view</mat-icon>
       <div>
         <strong>View Account Statement</strong>
         <span>Review your account activity on screen</span>
       </div>
-    </a>
+      </a>
+    </div>
   </section>
 </main>
 

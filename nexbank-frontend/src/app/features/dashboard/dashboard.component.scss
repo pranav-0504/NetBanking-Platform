@@ -260,6 +260,22 @@
   gap: 18px;
 }
 
+.dashboard__services {
+  width: min(100%, $nb-max-content-width);
+  margin: 34px auto 0;
+}
+
+.dashboard__services-heading {
+  margin-bottom: 14px;
+
+  h2 {
+    margin: 4px 0 0;
+    font-family: $nb-font-heading;
+    font-size: 1.35rem;
+    color: $nb-text-primary;
+  }
+}
+
 .dashboard__action {
   min-height: 120px;
   gap: 16px;
