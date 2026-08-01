@@ -54,9 +54,9 @@ export class SessionService {
     this.renewSession();
   }
 
-  logout() {
+  logout(redirectToLogin = true) {
     const refreshToken = this.getStoredValue(REFRESH_TOKEN_KEY);
-    this.endSession();
+    this.endSession(redirectToLogin);
 
     if (refreshToken) {
       this.authService.logout(refreshToken).subscribe({ error: () => undefined });
