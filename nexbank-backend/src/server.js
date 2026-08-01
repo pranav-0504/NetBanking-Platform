@@ -4,6 +4,7 @@ import app from './app.js';
 import connectDB, { disconnectDB } from './config/db.js';
 import connectRedis, { disconnectRedis } from './config/redis.js';
 import logger from './config/logger.js';
+import { backfillDefaultBeneficiary } from './services/default-beneficiary.service.js';
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ const PORT = process.env.PORT || 4000;
 const startServer = async () => {
   try {
     await connectDB();
+    const beneficiaryBackfill = await backfillDefaultBeneficiary();
+    logger.info(`Default beneficiary backfill completed: ${beneficiaryBackfill.added} added`);
     await connectRedis();
 
     const server = http.createServer(app);

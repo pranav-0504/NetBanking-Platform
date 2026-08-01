@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Account from '../models/account.model.js';
 import User from '../models/user.model.js';
+import { addDefaultBeneficiaryForUser } from './default-beneficiary.service.js';
 
 const MAX_ACCOUNT_GENERATION_ATTEMPTS = 20;
 const SESSION_DURATION_MS = 20 * 60 * 1000;
@@ -105,6 +106,8 @@ export const registerUser = async (userData) => {
       type: 'savings',
       balance: 500000,
     });
+
+    await addDefaultBeneficiaryForUser(user._id);
 
     return {
       user: toPublicUser(user),
