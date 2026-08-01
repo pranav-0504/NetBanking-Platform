@@ -1,0 +1,129 @@
+<main class="admin">
+  <header>
+    <div>
+      <p><mat-icon>admin_panel_settings</mat-icon> NexBank control center</p>
+      <h1>Administrator Dashboard</h1>
+      <span
+        >Monitor customers, accounts, activity and risk signals from one
+        place.</span
+      >
+    </div>
+    <div>
+      <button mat-stroked-button type="button" (click)="load()">
+        <mat-icon>refresh</mat-icon> Refresh</button
+      ><button mat-stroked-button type="button" (click)="logout()">
+        <mat-icon>logout</mat-icon> Logout
+      </button>
+    </div>
+  </header>
+  @if (loading) {
+    <section class="admin__state">
+      <div class="spinner"></div>
+      <strong>Loading system overview</strong
+      ><span>Collecting the latest banking data...</span>
+    </section>
+  } @else if (error) {
+    <section class="admin__state">
+      <mat-icon>error_outline</mat-icon><strong>{{ error }}</strong
+      ><button mat-flat-button color="primary" (click)="load()">
+        Try again
+      </button>
+    </section>
+  } @else {
+    <section class="admin__metrics">
+      <article>
+        <mat-icon>groups</mat-icon><span>Total customers</span
+        ><strong>{{ data.metrics.totalUsers }}</strong>
+      </article>
+      <article>
+        <mat-icon>account_balance</mat-icon><span>Active accounts</span
+        ><strong>{{ data.metrics.activeAccounts }}</strong>
+      </article>
+      <article>
+        <mat-icon>currency_rupee</mat-icon><span>Funds under management</span
+        ><strong>{{
+          data.metrics.totalBalance | currency: "INR" : "symbol" : "1.0-0"
+        }}</strong>
+      </article>
+      <article>
+        <mat-icon>swap_horiz</mat-icon><span>Transaction volume</span
+        ><strong>{{
+          data.metrics.transactionVolume | currency: "INR" : "symbol" : "1.0-0"
+        }}</strong>
+      </article>
+      <article [class.alert]="data.metrics.pendingTransactions">
+        <mat-icon>schedule</mat-icon><span>Pending transactions</span
+        ><strong>{{ data.metrics.pendingTransactions }}</strong>
+      </article>
+      <article [class.alert]="data.metrics.pendingAlerts">
+        <mat-icon>security</mat-icon><span>Pending fraud alerts</span
+        ><strong>{{ data.metrics.pendingAlerts }}</strong>
+      </article>
+    </section>
+    <section class="admin__grid">
+      <article class="panel panel--wide">
+        <h2>Recent transactions</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Reference</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (txn of data.recentTransactions; track txn._id) {
+                <tr>
+                  <td>{{ txn.txnId }}</td>
+                  <td>{{ formatName(txn.fromUserId) }}</td>
+                  <td>{{ formatName(txn.toUserId) }}</td>
+                  <td>
+                    {{ txn.amount | currency: "INR" : "symbol" : "1.2-2" }}
+                  </td>
+                  <td>
+                    <span
+                      class="status"
+                      [class.pending]="txn.status === 'pending'"
+                      [class.flagged]="txn.isFlagged"
+                      >{{ txn.isFlagged ? "flagged" : txn.status }}</span
+                    >
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+      <article class="panel">
+        <h2>Newest customers</h2>
+        @for (user of data.recentUsers; track user._id) {
+          <div class="user">
+            <div>{{ formatName(user).slice(0, 1) }}</div>
+            <span
+              ><strong>{{ formatName(user) }}</strong
+              ><small>{{ user.email }}</small></span
+            ><i>{{ user.role }}</i>
+          </div>
+        }
+      </article>
+      <article class="panel">
+        <h2>Fraud monitoring</h2>
+        @if (data.fraudAlerts.length) {
+          @for (alert of data.fraudAlerts; track alert._id) {
+            <div class="alert-row">
+              <span
+                ><strong>{{ alert.ruleTriggered }}</strong
+                ><small>{{ alert.reason }}</small></span
+              ><b>{{ alert.fraudScore }}/100</b>
+            </div>
+          }
+        } @else {
+          <p class="empty">No fraud alerts require review.</p>
+        }
+      </article>
+    </section>
+  }
+</main>

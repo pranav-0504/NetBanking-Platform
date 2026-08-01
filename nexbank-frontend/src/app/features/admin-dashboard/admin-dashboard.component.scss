@@ -1,0 +1,249 @@
+@use "styles/variables" as *;
+.admin {
+  min-height: 100vh;
+  padding: 32px 28px 48px;
+  color: $nb-text-primary;
+}
+.admin > header,
+.admin__metrics,
+.admin__grid,
+.admin__state {
+  width: min(100%, $nb-max-content-width);
+  margin-inline: auto;
+}
+.admin > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 26px;
+  > div:last-child {
+    display: flex;
+    gap: 10px;
+  }
+  p {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: $nb-teal-400;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  h1 {
+    margin: 4px 0 7px;
+    font-family: $nb-font-heading;
+    font-size: clamp(1.8rem, 4vw, 2.35rem);
+  }
+  span {
+    color: $nb-text-secondary;
+  }
+}
+.admin__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 22px;
+  article {
+    padding: 20px;
+    border: 1px solid $nb-border;
+    border-radius: $nb-radius-md;
+    background: linear-gradient(
+      145deg,
+      rgba(17, 31, 53, 0.96),
+      rgba(10, 22, 40, 0.96)
+    );
+    mat-icon {
+      color: $nb-teal-400;
+    }
+    span,
+    strong {
+      display: block;
+    }
+    span {
+      margin-top: 13px;
+      color: $nb-text-secondary;
+      font-size: 0.82rem;
+    }
+    strong {
+      margin-top: 5px;
+      font-family: $nb-font-heading;
+      font-size: 1.65rem;
+    }
+    &.alert {
+      border-color: rgba(245, 158, 11, 0.45);
+      mat-icon {
+        color: $nb-warning;
+      }
+    }
+  }
+}
+.admin__grid {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 18px;
+}
+.panel {
+  padding: 22px;
+  border: 1px solid $nb-border;
+  border-radius: $nb-radius-md;
+  background: $nb-surface;
+  box-shadow: $nb-shadow-sm;
+  h2 {
+    margin: 0 0 18px;
+    font-family: $nb-font-heading;
+    font-size: 1.1rem;
+  }
+  .panel--wide {
+    grid-row: span 2;
+  }
+}
+.table-wrap {
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+th,
+td {
+  padding: 12px 8px;
+  border-bottom: 1px solid $nb-border;
+  text-align: left;
+}
+th {
+  color: $nb-text-muted;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+td {
+  color: $nb-text-secondary;
+}
+.status {
+  color: $nb-success;
+  text-transform: capitalize;
+  &.pending {
+    color: $nb-warning;
+  }
+  &.flagged {
+    color: $nb-error;
+  }
+}
+.user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 0;
+  border-top: 1px solid $nb-border;
+  > div {
+    display: grid;
+    place-items: center;
+    width: 31px;
+    height: 31px;
+    border-radius: 50%;
+    background: rgba(0, 229, 196, 0.12);
+    color: $nb-teal-400;
+    font-weight: 800;
+  }
+  span {
+    display: grid;
+    min-width: 0;
+    flex: 1;
+  }
+  small {
+    overflow: hidden;
+    color: $nb-text-muted;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  i {
+    color: $nb-teal-400;
+    font-size: 0.7rem;
+    font-style: normal;
+    text-transform: capitalize;
+  }
+}
+.alert-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid $nb-border;
+  span {
+    display: grid;
+    gap: 4px;
+  }
+  small {
+    color: $nb-text-secondary;
+  }
+  b {
+    color: $nb-warning;
+    white-space: nowrap;
+  }
+}
+.empty {
+  color: $nb-text-secondary;
+}
+.admin__state {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  padding: 70px 20px;
+  border: 1px solid $nb-border;
+  border-radius: $nb-radius-md;
+  background: $nb-surface;
+  color: $nb-text-secondary;
+  text-align: center;
+  strong {
+    color: $nb-text-primary;
+  }
+  mat-icon {
+    font-size: 38px;
+    width: 38px;
+    height: 38px;
+    color: $nb-error;
+  }
+}
+.spinner {
+  width: 35px;
+  height: 35px;
+  border: 3px solid rgba(0, 229, 196, 0.18);
+  border-top-color: $nb-teal-400;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (max-width: 850px) {
+  .admin__metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .admin__grid {
+    grid-template-columns: 1fr;
+  }
+  .panel--wide {
+    grid-row: auto;
+  }
+}
+@media (max-width: 600px) {
+  .admin {
+    padding: 22px 16px 38px;
+  }
+  .admin > header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .admin__metrics {
+    grid-template-columns: 1fr;
+  }
+  .admin > header > div:last-child {
+    width: 100%;
+  }
+  .admin > header button {
+    flex: 1;
+  }
+}

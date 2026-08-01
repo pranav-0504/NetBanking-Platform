@@ -94,7 +94,7 @@ export class LoginComponent {
 
         this.loading.set(false);
         this.showMessage('Login successful');
-        this.router.navigateByUrl('/dashboard');
+        this.router.navigateByUrl(response?.data?.user?.role === 'admin' ? '/adminDashboard' : '/dashboard');
       },
       error: (error) => {
         this.loading.set(false);

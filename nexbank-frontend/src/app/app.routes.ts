@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { loginRouteGuard } from './core/guards/login-route.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -24,6 +25,12 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () =>
       import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+  },
+  {
+    path: 'adminDashboard',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./features/admin-dashboard/admin-dashboard.component').then((m) => m.AdminDashboardComponent),
   },
   {
     path: 'fund-transfer',

@@ -10,6 +10,7 @@ import accountRoutes from './routes/account.routes.js';
 import authRoutes from './routes/auth.routes.js';
 import beneficiaryRoutes from './routes/beneficiary.routes.js';
 import transactionRoutes from './routes/transaction.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/accounts', accountRoutes);
 app.use('/api/v1/beneficiaries', beneficiaryRoutes);
 app.use('/api/v1/transactions', transactionRoutes);
+app.use('/api/v1/admin', adminRoutes);
 
 /**
  * API v1 base route — feature routes will be mounted here in subsequent steps.
