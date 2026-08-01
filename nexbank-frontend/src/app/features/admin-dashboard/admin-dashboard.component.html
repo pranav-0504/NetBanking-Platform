@@ -9,6 +9,7 @@
       >
     </div>
     <div>
+      <a mat-stroked-button routerLink="/dashboard"><mat-icon>dashboard</mat-icon> Customer Dashboard</a>
       <button mat-stroked-button type="button" (click)="load()">
         <mat-icon>refresh</mat-icon> Refresh</button
       ><button mat-stroked-button type="button" (click)="logout()">
@@ -109,7 +110,7 @@
           </div>
         }
       </article>
-      <article class="panel">
+      <!-- <article class="panel">
         <h2>Fraud monitoring</h2>
         @if (data.fraudAlerts.length) {
           @for (alert of data.fraudAlerts; track alert._id) {
@@ -123,7 +124,199 @@
         } @else {
           <p class="empty">No fraud alerts require review.</p>
         }
+      </article> -->
+    </section>
+    <section class="admin__operations">
+      <div class="admin__operations-title">
+        <div>
+          <p>Live operational data</p>
+          <h2>All users, accounts & transactions</h2>
+        </div>
+        <label
+          ><input type="checkbox" [(ngModel)]="liveRefresh" /> Live refresh
+          every 30 seconds</label
+        >
+      </div>
+      <article class="panel">
+        <h2>All Users</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Role</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of operations.users; track user._id) {
+                <tr>
+                  <td>{{ formatName(user) }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>{{ user.mobile }}</td>
+                  <td>{{ user.role }}</td>
+                  <td>
+                    <button
+                      class="delete-button"
+                      type="button"
+                      (click)="requestUserDeletion(user._id, formatName(user))"
+                      [disabled]="deletingId === user._id"
+                    >
+                      {{ deletingId === user._id ? "Deleting..." : "Delete" }}
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+      <article class="panel">
+        <h2>All Bank Accounts</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Holder</th>
+                <th>Account number</th>
+                <th>IFSC</th>
+                <th>Type</th>
+                <th>Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (account of operations.accounts; track account._id) {
+                <tr>
+                  <td>{{ formatName(account.userId) }}</td>
+                  <td>{{ account.accountNumber }}</td>
+                  <td>{{ account.ifscCode }}</td>
+                  <td>{{ account.type }}</td>
+                  <td>
+                    {{ account.balance | currency: "INR" : "symbol" : "1.2-2" }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </article>
+      <article class="panel">
+        <h2>All Transactions</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Reference</th>
+                <th>From / To</th>
+                <th>Mode</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (txn of operations.transactions; track txn._id) {
+                <tr>
+                  <td>{{ txn.txnId }}</td>
+                  <td>
+                    {{ formatName(txn.fromUserId) }} →
+                    {{ formatName(txn.toUserId) }}
+                  </td>
+                  <td>{{ txn.transferMode }}</td>
+                  <td>
+                    {{ txn.amount | currency: "INR" : "symbol" : "1.2-2" }}
+                  </td>
+                  <td>
+                    <span
+                      class="status"
+                      [class.pending]="txn.status === 'pending'"
+                      >{{ txn.status }}</span
+                    >
+                  </td>
+                  <td>
+                    @if (txn.status === "pending") {
+                      <button
+                        class="clear-button"
+                        type="button"
+                        (click)="clearTransaction(txn._id)"
+                        [disabled]="clearingId === txn._id"
+                      >
+                        {{ clearingId === txn._id ? "Clearing..." : "Clear" }}
+                      </button>
+                    } @else {
+                      <span class="empty">—</span>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </article>
     </section>
   }
 </main>
+
+@if (deleteTarget) {
+  <div class="admin-modal-backdrop" role="presentation">
+    <section
+      class="admin-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-user-title"
+    >
+      <div class="admin-modal__icon admin-modal__icon--danger">
+        <mat-icon>person_remove</mat-icon>
+      </div>
+      <h2 id="delete-user-title">Delete user?</h2>
+      <p>
+        Are you sure you want to delete <strong>{{ deleteTarget.name }}</strong
+        >? This removes their profile, accounts, beneficiaries and fraud alerts
+        permanently.
+      </p>
+      <div class="admin-modal__actions">
+        <button
+          mat-stroked-button
+          type="button"
+          (click)="cancelUserDeletion()"
+          [disabled]="!!deletingId"
+        >
+          No, keep user</button
+        ><button
+          class="admin-modal__delete"
+          type="button"
+          (click)="confirmUserDeletion()"
+          [disabled]="!!deletingId"
+        >
+          {{ deletingId ? "Deleting..." : "Yes, delete user" }}
+        </button>
+      </div>
+    </section>
+  </div>
+}
+@if (deletedUserName) {
+  <div class="admin-modal-backdrop" role="presentation">
+    <section
+      class="admin-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-success-title"
+    >
+      <div class="admin-modal__icon"><mat-icon>check</mat-icon></div>
+      <h2 id="delete-success-title">User deleted successfully</h2>
+      <p>
+        <strong>{{ deletedUserName }}</strong> has been deleted successfully.
+      </p>
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        (click)="closeSuccessModal()"
+      >
+        Done
+      </button>
+    </section>
+  </div>
+}
