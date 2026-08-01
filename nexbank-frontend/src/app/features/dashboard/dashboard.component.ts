@@ -46,6 +46,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   lastUpdated = new Date();
   accountRefreshing = false;
   loggingOut = false;
+  profileMenuOpen = false;
   private autoRefreshTimer?: number;
   private refreshDelayTimer?: number;
 
@@ -122,6 +123,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   get accountType() {
     return this.account?.type || 'savings';
+  }
+
+  toggleProfileMenu() {
+    this.profileMenuOpen = !this.profileMenuOpen;
   }
 
   logout() {

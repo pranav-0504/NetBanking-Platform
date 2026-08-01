@@ -1,0 +1,48 @@
+<main class="profile-page">
+  <header class="profile-page__header">
+    <div>
+      <p><mat-icon>person</mat-icon> Account settings</p>
+      <h1>Personal Profile Details</h1>
+      <span>Your personal information registered with NexBank.</span>
+    </div>
+    <a mat-stroked-button routerLink="/dashboard"
+      ><mat-icon>arrow_back</mat-icon> Dashboard</a
+    >
+  </header>
+  <section class="profile-card">
+    <div class="profile-card__identity">
+      <div class="profile-card__avatar">{{ initials }}</div>
+      <div>
+        <h2>{{ name }}</h2>
+        <p>{{ profile?.email || "No email available" }}</p>
+      </div>
+    </div>
+    <div class="profile-card__details">
+      <div>
+        <span>Full name</span><strong>{{ name }}</strong>
+      </div>
+      <div>
+        <span>Email address</span><strong>{{ profile?.email || "-" }}</strong>
+      </div>
+      <div>
+        <span>Mobile number</span><strong>{{ mobile }}</strong>
+      </div>
+      <div>
+        <span>Account role</span
+        ><strong>{{ profile?.role || "Customer" }}</strong>
+      </div>
+      <div>
+        <span>Email verification</span
+        ><strong [class.verified]="profile?.isEmailVerified">{{
+          profile?.isEmailVerified ? "Verified" : "Not verified"
+        }}</strong>
+      </div>
+      <div>
+        <span>Mobile verification</span
+        ><strong [class.verified]="profile?.isMobileVerified">{{
+          profile?.isMobileVerified ? "Verified" : "Not verified"
+        }}</strong>
+      </div>
+    </div>
+  </section>
+</main>

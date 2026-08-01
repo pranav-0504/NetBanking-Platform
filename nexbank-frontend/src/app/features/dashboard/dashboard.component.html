@@ -23,6 +23,24 @@
         <mat-icon [class.dashboard__logout-icon--spinning]="loggingOut">{{ loggingOut ? 'progress_activity' : 'logout' }}</mat-icon>
         {{ loggingOut ? 'Signing out...' : 'Logout' }}
       </button>
+      <div class="dashboard__profile-menu">
+        <button
+          class="dashboard__profile-trigger"
+          type="button"
+          (click)="toggleProfileMenu()"
+          [attr.aria-expanded]="profileMenuOpen"
+          aria-haspopup="true"
+          aria-label="Open personal profile details"
+        >
+          <mat-icon>person</mat-icon>
+        </button>
+
+        @if (profileMenuOpen) {
+          <a class="dashboard__profile-dropdown" routerLink="/personalProfileDetails" (click)="profileMenuOpen = false">
+            <mat-icon>person</mat-icon><span>Personal Profile Details</span><mat-icon class="dashboard__profile-arrow">arrow_forward</mat-icon>
+          </a>
+        }
+      </div>
     </nav>
   </header>
 

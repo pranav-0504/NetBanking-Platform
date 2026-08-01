@@ -56,6 +56,12 @@ export const routes: Routes = [
       import('./features/view-account-statement/view-account-statement.component').then((m) => m.ViewAccountStatementComponent),
   },
   {
+    path: 'personalProfileDetails',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/personal-profile-details/personal-profile-details.component').then((m) => m.PersonalProfileDetailsComponent),
+  },
+  {
     path: '**',
     loadComponent: () =>
       import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),

@@ -45,6 +45,48 @@
   flex-wrap: wrap;
 }
 
+.dashboard__profile-menu { position: relative; }
+
+.dashboard__profile-trigger {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(0, 229, 196, 0.35);
+  border-radius: 50%;
+  background: rgba(0, 229, 196, 0.09);
+  color: $nb-teal-400;
+  cursor: pointer;
+  transition: background .16s ease, transform .16s ease;
+
+  &:hover, &[aria-expanded='true'] { background: rgba(0, 229, 196, 0.18); transform: translateY(-1px); }
+  &:focus-visible { outline: 2px solid $nb-teal-400; outline-offset: 2px; }
+}
+
+.dashboard__profile-dropdown {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(320px, calc(100vw - 36px));
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 14px 16px;
+  border: 1px solid rgba(0, 229, 196, 0.22);
+  border-radius: $nb-radius-md;
+  background: $nb-navy-700;
+  box-shadow: $nb-shadow-lg;
+  color: $nb-text-primary;
+  font-size: .84rem;
+  font-weight: 700;
+
+  > mat-icon:first-child { color: $nb-teal-400; }
+  &:hover { border-color: rgba(0, 229, 196, .55); color: $nb-teal-400; }
+}
+.dashboard__profile-arrow { margin-left: auto; color: $nb-text-muted; font-size: 18px; }
+
 .dashboard__refresh-icon--spinning {
   animation: dashboard-refresh-spin 0.8s linear infinite;
 }
