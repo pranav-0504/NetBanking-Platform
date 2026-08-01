@@ -20,7 +20,6 @@
     <button mat-flat-button color="primary" type="button" (click)="viewStatement()" [disabled]="loading"><mat-icon>{{ loading ? 'progress_activity' : 'visibility' }}</mat-icon>{{ loading ? 'Loading statement...' : 'View statement' }}</button>
   </section>
 
-  @if (loading) { <section class="view-statement__status"><mat-icon>progress_activity</mat-icon><p>Loading your secure account statement...</p></section> }
   @if (loaded && !loading) {
     <section class="statement-result">
       <header><div><span>Account statement</span><h2>{{ accountHolderName }}</h2><p>{{ statementPeriod }}</p></div><div class="statement-result__account"><strong>{{ account?.accountNumber }}</strong><span>IFSC: {{ account?.ifscCode }}</span></div></header>
@@ -32,3 +31,14 @@
     </section>
   }
 </main>
+
+@if (loading) {
+  <div class="statement-loader-backdrop" role="status" aria-live="polite" aria-label="Loading account statement">
+    <section class="statement-loader">
+      <div class="statement-loader__icon"><mat-icon>description</mat-icon></div>
+      <div class="statement-loader__spinner"></div>
+      <strong>Preparing your statement</strong>
+      <span>Retrieving your secure account activity. Please wait.</span>
+    </section>
+  </div>
+}

@@ -239,6 +239,13 @@ td.amount {
     font-family: $nb-font-heading;
   }
 }
+.statement-loader-backdrop { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(3,10,24,.84); backdrop-filter: blur(6px); }
+.statement-loader { display: grid; justify-items: center; gap: 12px; width: min(100%, 340px); padding: 30px 24px; border: 1px solid rgba(0,229,196,.3); border-radius: $nb-radius-md; background: linear-gradient(145deg, $nb-navy-700, $nb-navy-900); box-shadow: $nb-shadow-lg, $nb-shadow-glow; text-align: center; strong { margin-top: 2px; font-size: 1rem; } span { color: $nb-text-secondary; font-size: .8rem; line-height: 1.45; } }
+.statement-loader__icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; color: $nb-teal-400; background: rgba(0,229,196,.13); animation: statement-float 1s ease-in-out infinite alternate; }
+.statement-loader__spinner { width: 29px; height: 29px; border: 3px solid rgba(0,229,196,.18); border-top-color: $nb-teal-400; border-radius: 50%; animation: statement-spin .75s linear infinite; }
+@keyframes statement-spin { to { transform: rotate(360deg); } }
+@keyframes statement-float { to { transform: translateY(-4px); } }
+
 @media (max-width: 900px) {
   .period-grid {
     grid-template-columns: repeat(3, 1fr);
