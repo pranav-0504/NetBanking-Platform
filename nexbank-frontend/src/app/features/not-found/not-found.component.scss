@@ -1,0 +1,64 @@
+@use 'styles/variables' as *;
+
+.not-found {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(0, 229, 196, 0.1), transparent 34%),
+    $nb-navy-900;
+}
+
+.not-found__content {
+  max-width: 440px;
+  text-align: center;
+  padding: 48px 32px;
+  border: 1px solid $nb-border;
+  border-radius: $nb-radius-lg;
+  background: rgba($nb-navy-700, 0.86);
+  box-shadow: $nb-shadow-lg;
+}
+
+.not-found__icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: $nb-teal-500;
+  background: rgba(0, 229, 196, 0.12);
+
+  mat-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+  }
+}
+
+.not-found__code {
+  margin: 0;
+  font-family: $nb-font-heading;
+  font-size: 4rem;
+  font-weight: 700;
+  line-height: 1;
+  color: $nb-teal-500;
+}
+
+h1 {
+  margin: 12px 0;
+  color: $nb-text-primary;
+  font-family: $nb-font-heading;
+  font-size: 1.75rem;
+}
+
+.not-found__message {
+  margin: 0 0 28px;
+  color: $nb-text-secondary;
+  line-height: 1.55;
+}
+
+a mat-icon {
+  margin-right: 8px;
+}
