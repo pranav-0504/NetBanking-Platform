@@ -15,6 +15,26 @@ body {
   height: 100%;
 }
 
+.password-toast.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: #111f35;
+  --mdc-snackbar-supporting-text-color: #f1f5f9;
+  --mat-snack-bar-button-color: #33ebd0;
+  min-width: min(390px, calc(100vw - 32px));
+  border: 1px solid rgba(0, 229, 196, 0.42);
+  border-radius: 12px;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.48), 0 0 20px rgba(0, 229, 196, 0.12);
+
+  .mdc-snackbar__surface {
+    background: #111f35;
+  }
+
+  .mat-mdc-snack-bar-label {
+    color: #f1f5f9;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+}
+
 body {
   background-color: $nb-navy-900;
   background-image:

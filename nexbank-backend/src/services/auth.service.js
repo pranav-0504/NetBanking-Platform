@@ -221,3 +221,35 @@ export const logoutUser = async (refreshToken) => {
     { $set: { refreshToken: null, sessionExpiresAt: null } },
   );
 };
+
+export const changeUserPassword = async (userId, currentPassword, newPassword) => {
+  if (typeof currentPassword !== 'string' || typeof newPassword !== 'string' || !currentPassword || !newPassword || newPassword.length < 5) {
+    const error = new Error('Please provide your current password and a new password of at least 5 characters.');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const user = await User.findById(userId);
+  if (!user) {
+    const error = new Error('User account not found.');
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (!(await bcrypt.compare(currentPassword, user.password))) {
+    const error = new Error('Your current password is incorrect.');
+    error.statusCode = 401;
+    throw error;
+  }
+
+  if (currentPassword === newPassword) {
+    const error = new Error('Your new password must be different from your current password.');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  user.refreshToken = null;
+  user.sessionExpiresAt = null;
+  await user.save();
+};

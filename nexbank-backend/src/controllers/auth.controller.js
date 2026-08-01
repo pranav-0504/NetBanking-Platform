@@ -1,4 +1,4 @@
-import { loginUser, logoutUser, refreshUserSession, registerUser } from '../services/auth.service.js';
+import { changeUserPassword, loginUser, logoutUser, refreshUserSession, registerUser } from '../services/auth.service.js';
 
 export const register = async (req, res) => {
   
@@ -67,5 +67,14 @@ export const logout = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+export const changePassword = async (req, res) => {
+  try {
+    await changeUserPassword(req.user.userId, req.body?.currentPassword, req.body?.newPassword);
+    return res.status(200).json({ success: true, message: 'Password updated successfully. Please sign in again.' });
+  } catch (error) {
+    return res.status(error.statusCode || 400).json({ success: false, message: error.message });
   }
 };

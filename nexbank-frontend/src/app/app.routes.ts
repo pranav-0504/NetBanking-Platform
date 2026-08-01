@@ -62,6 +62,12 @@ export const routes: Routes = [
       import('./features/personal-profile-details/personal-profile-details.component').then((m) => m.PersonalProfileDetailsComponent),
   },
   {
+    path: 'changePassword',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/change-password/change-password.component').then((m) => m.ChangePasswordComponent),
+  },
+  {
     path: '**',
     loadComponent: () =>
       import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),

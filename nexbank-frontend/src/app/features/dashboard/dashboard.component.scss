@@ -85,6 +85,7 @@
   > mat-icon:first-child { color: $nb-teal-400; }
   &:hover { border-color: rgba(0, 229, 196, .55); color: $nb-teal-400; }
 }
+.dashboard__profile-dropdown + .dashboard__profile-dropdown { top: calc(100% + 61px); }
 .dashboard__profile-arrow { margin-left: auto; color: $nb-text-muted; font-size: 18px; }
 
 .dashboard__refresh-icon--spinning {

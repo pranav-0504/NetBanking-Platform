@@ -29,4 +29,8 @@ export class AuthService {
     return this.http.post(`${this.api}/logout`, { refreshToken });
   }
 
+  changePassword(currentPassword: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.api}/change-password`, { currentPassword, newPassword });
+  }
+
 }
