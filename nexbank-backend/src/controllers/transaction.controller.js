@@ -32,7 +32,7 @@ const buildStatementPdf = ({ account, accountHolderName, transactions, startDate
       `BT /F1 9 Tf 48 730 Td (Account Holder: ${pdfText(accountHolderName)}) Tj ET`,
       `BT /F1 9 Tf 48 712 Td (Statement period: ${pdfText(startDate.toLocaleDateString('en-IN'))} - ${pdfText(endDate.toLocaleDateString('en-IN'))}) Tj ET`,
       '0.1 0.55 0.5 rg 48 686 516 1 re f',
-      'BT /F1 8 Tf 48 673 Td (DATE) Tj 72 0 Td (REFERENCE) Tj 150 0 Td (NOTE) Tj 125 0 Td (TRANSACTION TYPE) Tj 90 0 Td (AMOUNT) Tj ET',
+      'BT /F1 8 Tf 48 673 Td (DATE) Tj 72 0 Td (REFERENCE) Tj 150 0 Td (NOTE) Tj 125 0 Td (TRANSACTION TYPE) Tj 90 0 Td (CLOSING BALANCE) Tj ET',
     ];
 
     rows.forEach((transaction, index) => {
