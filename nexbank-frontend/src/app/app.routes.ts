@@ -50,6 +50,12 @@ export const routes: Routes = [
       import('./features/download-statement/download-statement.component').then((m) => m.DownloadStatementComponent),
   },
   {
+    path: 'view-account-statement',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/view-account-statement/view-account-statement.component').then((m) => m.ViewAccountStatementComponent),
+  },
+  {
     path: '**',
     loadComponent: () =>
       import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),

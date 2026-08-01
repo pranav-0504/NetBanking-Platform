@@ -179,6 +179,53 @@ export const downloadStatement = async (req, res) => {
   }
 };
 
+export const viewStatement = async (req, res) => {
+  try {
+    const { range, startDate: customStartDate, endDate: customEndDate } = req.body;
+    let startDate;
+    let endDate = new Date();
+    endDate.setHours(23, 59, 59, 999);
+
+    if (range === 'custom') {
+      startDate = new Date(`${customStartDate}T00:00:00`);
+      endDate = new Date(`${customEndDate}T23:59:59.999`);
+      if (!customStartDate || !customEndDate || Number.isNaN(startDate.getTime()) || Number.isNaN(endDate.getTime()) || startDate > endDate) {
+        return res.status(400).json({ success: false, message: 'Please provide a valid start and end date.' });
+      }
+    } else if (statementRanges[range]) {
+      startDate = new Date();
+      if (range === 'last_7_days') startDate.setDate(startDate.getDate() - statementRanges[range]);
+      else startDate.setMonth(startDate.getMonth() - statementRanges[range]);
+      startDate.setHours(0, 0, 0, 0);
+    } else {
+      return res.status(400).json({ success: false, message: 'Please select a valid statement period.' });
+    }
+
+    const [account, accountHolder, transactions] = await Promise.all([
+      Account.findOne({ userId: req.user.userId, isActive: true }),
+      User.findById(req.user.userId).select('firstName lastName'),
+      Transaction.find({
+        $or: [{ fromUserId: req.user.userId }, { toUserId: req.user.userId }],
+        createdAt: { $gte: startDate, $lte: endDate },
+      }).sort({ createdAt: -1 }),
+    ]);
+    if (!account) return res.status(404).json({ success: false, message: 'Active account not found.' });
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        account: { accountNumber: account.accountNumber, ifscCode: account.ifscCode, type: account.type, balance: account.balance },
+        accountHolderName: `${accountHolder?.firstName || ''} ${accountHolder?.lastName || ''}`.trim() || 'NexBank Customer',
+        startDate,
+        endDate,
+        transactions,
+      },
+    });
+  } catch {
+    return res.status(500).json({ success: false, message: 'Unable to load your statement.' });
+  }
+};
+
 export const transferFunds = async (req, res) => {
   try {
     const { beneficiaryId, amount, mode, note } = req.body;

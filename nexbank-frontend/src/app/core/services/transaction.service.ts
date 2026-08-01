@@ -21,4 +21,8 @@ export class TransactionService {
   downloadStatement(data: { range: string; startDate?: string; endDate?: string }): Observable<Blob> {
     return this.http.post(`${this.api}/statement`, data, { responseType: 'blob' });
   }
+
+  viewStatement(data: { range: string; startDate?: string; endDate?: string }): Observable<any> {
+    return this.http.post(`${this.api}/statement/view`, data);
+  }
 }
