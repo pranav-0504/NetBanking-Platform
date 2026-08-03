@@ -203,6 +203,30 @@
   font-size: .73rem;
   font-weight: 500;
 }
+.verification-action {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  gap: 14px;
+  margin-top: -6px;
+
+  button mat-icon {
+    margin-right: 5px;
+  }
+}
+.verified-name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: $nb-teal-300;
+  font-size: .78rem;
+
+  mat-icon {
+    width: 17px;
+    height: 17px;
+    font-size: 17px;
+  }
+}
 .amount-input { display: flex; align-items: center; overflow: hidden; border: 1px solid $nb-border; border-radius: $nb-radius-sm; background: $nb-navy-900; span { padding-left: 14px; color: $nb-teal-400; font-size: 1.1rem; } input { border: 0; &:focus { box-shadow: none; } } &:focus-within { border-color: rgba(0,229,196,.7); box-shadow: 0 0 0 3px rgba(0,229,196,.1); } }
 .transfer-form > button { min-height: 48px; margin-top: 2px; }
 .secure-footer { display: flex; align-items: center; gap: 8px; padding: 16px 0 2px; color: $nb-text-muted; font-size: .75rem; mat-icon { width: 17px; height: 17px; font-size: 17px; color: $nb-teal-400; } }

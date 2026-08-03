@@ -226,6 +226,38 @@ export const viewStatement = async (req, res) => {
   }
 };
 
+export const verifyBeneficiaryAccount = async (req, res) => {
+  try {
+    const accountNumber = String(req.body.accountNumber || '').trim();
+    const ifscCode = String(req.body.ifscCode || '').trim().toUpperCase();
+
+    if (!/^\d{8}$/.test(accountNumber) || !/^NEX00\d{4}$/.test(ifscCode)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Enter a valid 8-digit account number and IFSC code.',
+      });
+    }
+
+    const account = await Account.findOne({ accountNumber, ifscCode, isActive: true })
+      .populate('userId', 'firstName lastName');
+
+    if (!account) {
+      return res.status(404).json({
+        success: false,
+        message: 'The account number and IFSC code do not match an active bank account.',
+      });
+    }
+
+    const accountHolderName = `${account.userId?.firstName || ''} ${account.userId?.lastName || ''}`.trim() || 'NexBank Customer';
+    return res.status(200).json({
+      success: true,
+      data: { accountHolderName },
+    });
+  } catch {
+    return res.status(500).json({ success: false, message: 'Unable to verify the bank account.' });
+  }
+};
+
 export const transferFunds = async (req, res) => {
   try {
     const { beneficiaryId, amount, mode, note } = req.body;

@@ -18,6 +18,10 @@ export class TransactionService {
     return this.http.post(`${this.api}/transfer`, data);
   }
 
+  verifyBeneficiaryAccount(data: { accountNumber: string; ifscCode: string }): Observable<any> {
+    return this.http.post(`${this.api}/verify-beneficiary`, data);
+  }
+
   downloadStatement(data: { range: string; startDate?: string; endDate?: string }): Observable<Blob> {
     return this.http.post(`${this.api}/statement`, data, { responseType: 'blob' });
   }

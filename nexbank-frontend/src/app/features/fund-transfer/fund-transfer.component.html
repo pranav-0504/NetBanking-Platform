@@ -83,6 +83,16 @@
               }
             </label>
 
+            <div class="verification-action">
+              <button mat-stroked-button type="button" (click)="verifyBeneficiaryAccount()" [disabled]="verificationLoading">
+                <mat-icon>{{ verificationLoading ? 'progress_activity' : 'verified_user' }}</mat-icon>
+                {{ verificationLoading ? 'Checking account...' : 'Check Verified Name' }}
+              </button>
+              @if (verifiedAccountHolder) {
+                <span class="verified-name"><mat-icon>check_circle</mat-icon> Verified account holder: <strong>{{ verifiedAccountHolder }}</strong></span>
+              }
+            </div>
+
             <label>
               <span>Amount</span>
               <div class="amount-input"><span>₹</span><input type="number" min="1" formControlName="amount" placeholder="0"></div>

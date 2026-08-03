@@ -41,8 +41,10 @@ export class FundTransferComponent implements OnDestroy {
   transferCompleted = false;
   openedFromBeneficiary = false;
   entryLoading = false;
+  verificationLoading = false;
   accountNumberError = '';
   ifscCodeError = '';
+  verifiedAccountHolder = '';
   private processingTimer?: number;
   private redirectTimer?: number;
   private entryTimer?: number;
@@ -131,6 +133,38 @@ export class FundTransferComponent implements OnDestroy {
     }, 2000);
   }
 
+  verifyBeneficiaryAccount() {
+    const accountNumber = this.transferForm.controls.accountNumber;
+    const ifscCode = this.transferForm.controls.ifscCode;
+
+    if (accountNumber.invalid || ifscCode.invalid) {
+      accountNumber.markAsDirty();
+      accountNumber.markAsTouched();
+      ifscCode.markAsDirty();
+      ifscCode.markAsTouched();
+      this.accountNumberError = this.getAccountNumberError();
+      this.ifscCodeError = this.getIfscCodeError();
+      this.failureMessage = 'Enter a valid 8-digit account number and IFSC code before checking the account.';
+      return;
+    }
+
+    this.verificationLoading = true;
+    this.verifiedAccountHolder = '';
+    this.transactionService.verifyBeneficiaryAccount({
+      accountNumber: accountNumber.value || '',
+      ifscCode: ifscCode.value || '',
+    }).subscribe({
+      next: (response) => {
+        this.verificationLoading = false;
+        this.verifiedAccountHolder = response?.data?.accountHolderName || 'NexBank Customer';
+      },
+      error: (error) => {
+        this.verificationLoading = false;
+        this.failureMessage = error?.error?.message || 'The account number and IFSC code do not match an active bank account.';
+      },
+    });
+  }
+
   closeFailureModal() {
     this.failureMessage = '';
   }
@@ -187,9 +221,17 @@ export class FundTransferComponent implements OnDestroy {
     );
 
     this.validationSubscription.add(
+      accountNumber.valueChanges.subscribe(() => this.verifiedAccountHolder = ''),
+    );
+
+    this.validationSubscription.add(
       ifscCode.valueChanges.pipe(debounceTime(500)).subscribe(() => {
         this.ifscCodeError = this.getIfscCodeError();
       }),
+    );
+
+    this.validationSubscription.add(
+      ifscCode.valueChanges.subscribe(() => this.verifiedAccountHolder = ''),
     );
   }
 
