@@ -69,12 +69,18 @@
           <div class="form-grid">
             <label>
               <span>Beneficiary account number</span>
-              <input type="text" inputmode="numeric" maxlength="8" formControlName="accountNumber" placeholder="8-digit account number" [readOnly]="!!transferForm.value.beneficiaryId">
+              <input type="text" inputmode="numeric" maxlength="8" formControlName="accountNumber" placeholder="8-digit account number" [readOnly]="!!transferForm.value.beneficiaryId" [class.input-invalid]="!!accountNumberError" [attr.aria-invalid]="!!accountNumberError" [attr.aria-describedby]="accountNumberError ? 'account-number-error' : null">
+              @if (accountNumberError) {
+                <small id="account-number-error" class="field-error" role="alert">{{ accountNumberError }}</small>
+              }
             </label>
 
             <label>
               <span>IFSC code</span>
-              <input type="text" maxlength="9" formControlName="ifscCode" placeholder="NEX001234" [readOnly]="!!transferForm.value.beneficiaryId">
+              <input type="text" maxlength="9" formControlName="ifscCode" placeholder="NEX001234" [readOnly]="!!transferForm.value.beneficiaryId" [class.input-invalid]="!!ifscCodeError" [attr.aria-invalid]="!!ifscCodeError" [attr.aria-describedby]="ifscCodeError ? 'ifsc-code-error' : null">
+              @if (ifscCodeError) {
+                <small id="ifsc-code-error" class="field-error" role="alert">{{ ifscCodeError }}</small>
+              }
             </label>
 
             <label>

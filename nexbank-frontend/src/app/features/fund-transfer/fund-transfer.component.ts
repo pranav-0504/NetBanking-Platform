@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Subscription, debounceTime } from 'rxjs';
 import { BeneficiaryService } from '../../core/services/beneficiary.service';
 import { TransactionService } from '../../core/services/transaction.service';
 
@@ -40,9 +41,12 @@ export class FundTransferComponent implements OnDestroy {
   transferCompleted = false;
   openedFromBeneficiary = false;
   entryLoading = false;
+  accountNumberError = '';
+  ifscCodeError = '';
   private processingTimer?: number;
   private redirectTimer?: number;
   private entryTimer?: number;
+  private validationSubscription = new Subscription();
 
   transferForm = this.fb.group({
     beneficiaryId: [''],
@@ -54,6 +58,7 @@ export class FundTransferComponent implements OnDestroy {
   });
 
   ngOnInit() {
+    this.watchPaymentDetailValidation();
     this.openedFromBeneficiary = !!this.route.snapshot.queryParamMap.get('beneficiaryId');
     this.entryLoading = this.openedFromBeneficiary;
     if (this.entryLoading) {
@@ -65,6 +70,7 @@ export class FundTransferComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
+    this.validationSubscription.unsubscribe();
     if (this.processingTimer) {
       window.clearTimeout(this.processingTimer);
     }
@@ -87,6 +93,7 @@ export class FundTransferComponent implements OnDestroy {
         accountNumber: '',
         ifscCode: '',
       });
+      this.resetPaymentDetailValidation();
       return;
     }
 
@@ -95,6 +102,7 @@ export class FundTransferComponent implements OnDestroy {
       accountNumber: beneficiary.accountNumber,
       ifscCode: beneficiary.ifscCode,
     });
+    this.resetPaymentDetailValidation();
   }
 
   submitTransfer() {
@@ -166,5 +174,53 @@ export class FundTransferComponent implements OnDestroy {
       horizontalPosition: 'right',
       verticalPosition: 'top',
     });
+  }
+
+  private watchPaymentDetailValidation() {
+    const accountNumber = this.transferForm.controls.accountNumber;
+    const ifscCode = this.transferForm.controls.ifscCode;
+
+    this.validationSubscription.add(
+      accountNumber.valueChanges.pipe(debounceTime(500)).subscribe(() => {
+        this.accountNumberError = this.getAccountNumberError();
+      }),
+    );
+
+    this.validationSubscription.add(
+      ifscCode.valueChanges.pipe(debounceTime(500)).subscribe(() => {
+        this.ifscCodeError = this.getIfscCodeError();
+      }),
+    );
+  }
+
+  private getAccountNumberError(): string {
+    const control = this.transferForm.controls.accountNumber;
+    if (!control.dirty || !control.invalid || this.transferForm.value.beneficiaryId) {
+      return '';
+    }
+
+    return control.hasError('required')
+      ? 'Account number is required.'
+      : 'Enter an 8-digit account number.';
+  }
+
+  private getIfscCodeError(): string {
+    const control = this.transferForm.controls.ifscCode;
+    if (!control.dirty || !control.invalid || this.transferForm.value.beneficiaryId) {
+      return '';
+    }
+
+    return control.hasError('required')
+      ? 'IFSC code is required.'
+      : 'Use the format NEX001234.';
+  }
+
+  private resetPaymentDetailValidation() {
+    this.accountNumberError = '';
+    this.ifscCodeError = '';
+    this.transferForm.controls.accountNumber.markAsPristine();
+    this.transferForm.controls.accountNumber.markAsUntouched();
+    this.transferForm.controls.ifscCode.markAsPristine();
+    this.transferForm.controls.ifscCode.markAsUntouched();
   }
 }

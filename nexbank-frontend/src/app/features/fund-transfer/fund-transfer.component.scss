@@ -191,6 +191,18 @@
   }
 }
 .form-grid em { color: $nb-text-muted; font-size: .72rem; font-style: normal; font-weight: 500; }
+.form-grid input.input-invalid {
+  border-color: #ff6b6b;
+}
+.form-grid input.input-invalid:focus {
+  border-color: #ff8585;
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, .14);
+}
+.field-error {
+  color: #ff8f8f;
+  font-size: .73rem;
+  font-weight: 500;
+}
 .amount-input { display: flex; align-items: center; overflow: hidden; border: 1px solid $nb-border; border-radius: $nb-radius-sm; background: $nb-navy-900; span { padding-left: 14px; color: $nb-teal-400; font-size: 1.1rem; } input { border: 0; &:focus { box-shadow: none; } } &:focus-within { border-color: rgba(0,229,196,.7); box-shadow: 0 0 0 3px rgba(0,229,196,.1); } }
 .transfer-form > button { min-height: 48px; margin-top: 2px; }
 .secure-footer { display: flex; align-items: center; gap: 8px; padding: 16px 0 2px; color: $nb-text-muted; font-size: .75rem; mat-icon { width: 17px; height: 17px; font-size: 17px; color: $nb-teal-400; } }
