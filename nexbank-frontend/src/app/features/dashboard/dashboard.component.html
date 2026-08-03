@@ -36,9 +36,10 @@
           (click)="toggleProfileMenu()"
           [attr.aria-expanded]="profileMenuOpen"
           aria-haspopup="true"
-          aria-label="Open personal profile details"
+          [attr.aria-label]="'Open personal profile details for ' + fullName"
         >
           <mat-icon>person</mat-icon>
+          <span>{{ fullName }}</span>
         </button>
 
         @if (profileMenuOpen) {

@@ -48,17 +48,28 @@
 .dashboard__profile-menu { position: relative; }
 
 .dashboard__profile-trigger {
-  display: grid;
-  place-items: center;
-  width: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 40px;
   height: 40px;
-  padding: 0;
+  padding: 0 13px 0 10px;
   border: 1px solid rgba(0, 229, 196, 0.35);
-  border-radius: 50%;
+  border-radius: 999px;
   background: rgba(0, 229, 196, 0.09);
   color: $nb-teal-400;
   cursor: pointer;
   transition: background .16s ease, transform .16s ease;
+
+  span {
+    max-width: 160px;
+    overflow: hidden;
+    color: $nb-text-primary;
+    font-size: .82rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   &:hover, &[aria-expanded='true'] { background: rgba(0, 229, 196, 0.18); transform: translateY(-1px); }
   &:focus-visible { outline: 2px solid $nb-teal-400; outline-offset: 2px; }
