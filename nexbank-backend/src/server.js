@@ -1,4 +1,3 @@
-import dotenv from 'dotenv';
 import http from 'http';
 import app from './app.js';
 import connectDB, { disconnectDB } from './config/db.js';
@@ -6,7 +5,6 @@ import connectRedis, { disconnectRedis } from './config/redis.js';
 import logger from './config/logger.js';
 import { backfillDefaultBeneficiary } from './services/default-beneficiary.service.js';
 
-dotenv.config();
 
 const PORT = process.env.PORT || 4000;
 
