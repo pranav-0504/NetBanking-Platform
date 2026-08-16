@@ -4,7 +4,7 @@
 
 [![Live application](https://img.shields.io/badge/Live%20Application-Open%20NexBank-0F766E?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://nexbank-api-vm.centralindia.cloudapp.azure.com/auth/login)
 
-**Live URL:** [https://nexbank-api-vm.centralindia.cloudapp.azure.com/auth/login](https://nexbank-api-vm.centralindia.cloudapp.azure.com/auth/login)
+**🌐 Live Deployment URL:** [https://nexbank-api-vm.centralindia.cloudapp.azure.com/auth/login](https://nexbank-api-vm.centralindia.cloudapp.azure.com/auth/login)
 
 > **Important:** NexBank is a portfolio/learning project and banking simulation. It is not connected to a real financial institution and must not be used with real money or sensitive banking credentials.
 
