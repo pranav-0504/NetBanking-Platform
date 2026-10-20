@@ -14,6 +14,9 @@ import adminRoutes from './routes/admin.routes.js';
 
 const app = express();
 
+// Trust only the local reverse proxy (Caddy).
+app.set('trust proxy', 'loopback');
+
 /**
  * Configure Express middleware stack.
  */
@@ -26,7 +29,17 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 );
-app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }));
+// app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }));
+app.use(
+  morgan(
+    ':remote-addr :method :url :status :res[content-length] bytes - :response-time ms',
+    {
+      stream: {
+        write: (message) => logger.info(message.trim()),
+      },
+    },
+  ),
+);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
